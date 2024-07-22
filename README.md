@@ -3,7 +3,7 @@
 ## Clone repo
 
 ```sh
-https://github.com/kunnoh/lms-api.git
+git clone https://github.com/kunnoh/lms-api.git
 ```
 
 goto directory
