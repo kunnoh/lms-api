@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -15,11 +16,19 @@ func main() {
 	routes := gin.Default()
 
 	routes.GET("", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "Welcome to LMS-API")
+		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "Welcome to LMS-API"})
 	})
 
+	routes.GET("/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
+	})
+
+	PORT := os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "7755"
+	}
 	server := &http.Server{
-		Addr:    ":7755",
+		Addr:    ":" + PORT,
 		Handler: routes,
 	}
 
