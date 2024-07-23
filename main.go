@@ -13,6 +13,7 @@ import (
 
 func main() {
 	log.Info().Msg("started server")
+
 	routes := gin.Default()
 
 	routes.GET("", func(ctx *gin.Context) {
