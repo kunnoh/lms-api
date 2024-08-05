@@ -12,7 +12,7 @@ cd lms-api
 ```
 ## Run app
 
-**Run in development mode**
+**development mode**
 ```sh
 make dev
 ```

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -34,6 +33,5 @@ func main() {
 	}
 
 	err := server.ListenAndServe()
-	fmt.Println(err)
 	utils.ErrorPanic(err)
 }
