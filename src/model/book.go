@@ -1,7 +1,7 @@
 package model
 
 type Book struct {
-	Id          int    `gorm:"type:int;primary_key"`
+	BookId      int    `gorm:"type:int;primary_key"`
 	Title       string `gorm:"type:varchar(255);"`
 	ISDN        string `gorm:"type:varchar(255);"`
 	Publication string `gorm:"type:varchar(255);"`
