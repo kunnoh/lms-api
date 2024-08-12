@@ -9,6 +9,6 @@ type UserService interface {
 	Create(user request.CreateUserRequest)
 	Update(user request.UpdateUserRequest)
 	Delete(UserId int)
-	FindById(UserId int)
+	FindById(UserId int) response.UserResponse
 	FindAll() []response.UserResponse
 }

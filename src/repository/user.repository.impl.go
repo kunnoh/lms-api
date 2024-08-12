@@ -13,18 +13,15 @@ type UserServiceImpl struct {
 	Db *gorm.DB
 }
 
-func NewUserServiceImpl(Db *gorm.DB) UserRepository {
-	return &UserServiceImpl{Db: Db}
-}
-
-// Delete implements UserService.
+// Delete implements UserRepository.
 func (u *UserServiceImpl) Delete(userId int) {
 	var user model.User
 	res := u.Db.Where("id = ?", userId).Delete(&user)
 	utils.ErrorPanic(res.Error)
+
 }
 
-// FindAll implements UserService.
+// FindAll implements UserRepository.
 func (u *UserServiceImpl) FindAll() []model.User {
 	var users []model.User
 	res := u.Db.Find(&users)
@@ -33,7 +30,7 @@ func (u *UserServiceImpl) FindAll() []model.User {
 }
 
 // FindById implements UserRepository.
-func (u *UserServiceImpl) FindById(userId string) (user model.User, err error) {
+func (u *UserServiceImpl) FindById(userId int) (user model.User, err error) {
 	var userr model.User
 	res := u.Db.Find(&userr, userId)
 	if res != nil {
@@ -57,4 +54,8 @@ func (u *UserServiceImpl) Update(user model.User) {
 	}
 	res := u.Db.Model(&user).Updates(updateUser)
 	utils.ErrorPanic(res.Error)
+}
+
+func NewUserServiceImpl(Db *gorm.DB) UserRepository {
+	return &UserServiceImpl{Db: Db}
 }

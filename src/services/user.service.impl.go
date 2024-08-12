@@ -54,7 +54,7 @@ func (u *UserServiceImpl) FindAll() []response.UserResponse {
 }
 
 // FindById implements UserService.
-func (u *UserServiceImpl) FindById(UserId int) {
+func (u *UserServiceImpl) FindById(UserId int) response.UserResponse {
 	userData, err := u.UserRepo.FindById(UserId)
 	utils.ErrorPanic(err)
 
