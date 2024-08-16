@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/kunnoh/lms-api/src/controller"
 	"github.com/kunnoh/lms-api/src/model"
 	"github.com/kunnoh/lms-api/src/repository"
+	routes "github.com/kunnoh/lms-api/src/router"
 	"github.com/kunnoh/lms-api/src/services"
 	"github.com/kunnoh/lms-api/src/utils"
 )
@@ -32,17 +32,10 @@ func main() {
 	userService := services.UserServiceImpl(userRepo, validate)
 
 	// controller
-	userController := controller.NewUserController()
+	userController := controller.NewUserController(userService)
 
-	routes := gin.Default()
-
-	routes.GET("", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "Welcome to LMS-API"})
-	})
-
-	routes.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
-	})
+	// routes
+	route := routes.NewRouter(userController)
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
@@ -50,7 +43,7 @@ func main() {
 	}
 	server := &http.Server{
 		Addr:    ":" + PORT,
-		Handler: routes,
+		Handler: route,
 	}
 
 	err := server.ListenAndServe()

@@ -1,14 +1,10 @@
 package model
 
 type User struct {
-	UserId   int    `gorm:"type:int;primary_key"`
-	Email    string `gorm:"type:varchar(255);uniq_key"`
-	Name     string `gorm:"type:varchar(255);"`
-	Password string `gorm:"type:varchar(255);"`
-	Phone    int    `gorm:"type:int;uniq_key"`
-	IdNumber int    `gorm:"type:int;uniq_key"`
-}
-
-func UserModel() {
-
+	UserId   int    `gorm:"primaryKey;autoIncrement"`
+	Email    string `gorm:"type:varchar(255);unique;not null"`
+	Name     string `gorm:"type:varchar(255);not null"`
+	Password string `gorm:"type:varchar(255);not null"`
+	Phone    string `gorm:"type:varchar(20);unique;not null"`
+	IdNumber string `gorm:"type:varchar(20);unique;not null"`
 }

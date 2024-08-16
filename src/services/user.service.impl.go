@@ -1,6 +1,8 @@
 package services
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
@@ -14,21 +16,20 @@ type UserServiceImpl struct {
 	validate *validator.Validate
 }
 
-func NewUserServiceImpl(userRepository repository.UserRepository, validate *validator.Validate) UserService {
-	return &UserServiceImpl{
-		UserRepo: userRepository,
-		validate: validate,
-	}
-}
-
 // Create implements UserService.
-func (u *UserServiceImpl) Create(user request.CreateUserRequest) {
+func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Response {
 	err := u.validate.Struct(user)
 	utils.ErrorPanic(err)
-	useModel := model.User{
-		Name: user.Name,
+	userModel := model.User{
+		Name:  user.Name,
+		Email: user.Email,
 	}
-	u.UserRepo.Save(useModel)
+	u.UserRepo.Save(userModel)
+
+	return response.Response{
+		Code:   http.StatusCreated,
+		Status: "success",
+	}
 }
 
 // Delete implements UserService.
@@ -37,7 +38,7 @@ func (u *UserServiceImpl) Delete(UserId int) {
 }
 
 // FindAll implements UserService.
-func (u *UserServiceImpl) FindAll() []response.UserResponse {
+func (u *UserServiceImpl) FindAll() response.Response {
 	res := u.UserRepo.FindAll()
 	var users []response.UserResponse
 	for _, val := range res {
@@ -50,13 +51,24 @@ func (u *UserServiceImpl) FindAll() []response.UserResponse {
 		}
 		users = append(users, user)
 	}
-	return users
+
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "success",
+		Data:   users,
+	}
 }
 
 // FindById implements UserService.
-func (u *UserServiceImpl) FindById(UserId int) response.UserResponse {
+func (u *UserServiceImpl) FindById(UserId int) response.Response {
 	userData, err := u.UserRepo.FindById(UserId)
-	utils.ErrorPanic(err)
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusNotFound,
+			Status: "error",
+			Error:  "User not found",
+		}
+	}
 
 	userRes := response.UserResponse{
 		UserId:   userData.UserId,
@@ -65,13 +77,45 @@ func (u *UserServiceImpl) FindById(UserId int) response.UserResponse {
 		Phone:    userData.Phone,
 		IdNumber: userData.IdNumber,
 	}
-	return userRes
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "success",
+		Data:   userRes,
+	}
 }
 
 // Update implements UserService.
-func (u *UserServiceImpl) Update(user request.UpdateUserRequest) {
+func (u *UserServiceImpl) Update(user request.UpdateUserRequest) response.Response {
+	err := u.validate.Struct(user)
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusBadRequest,
+			Status: "validation error",
+			Error:  err.Error(),
+		}
+	}
+
 	userData, err := u.UserRepo.FindById(user.UserId)
-	utils.ErrorPanic(err)
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusNotFound,
+			Status: "error",
+			Error:  "User not found",
+		}
+	}
+
 	userData.Name = user.Name
+	// Update other fields as necessary
 	u.UserRepo.Update(userData)
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "User updated successfully",
+	}
+}
+
+func NewUserServiceImpl(userRepository repository.UserRepository, validate *validator.Validate) UserService {
+	return &UserServiceImpl{
+		UserRepo: userRepository,
+		validate: validate,
+	}
 }
