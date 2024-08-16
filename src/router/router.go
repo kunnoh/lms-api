@@ -10,7 +10,7 @@ import (
 func NewRouter(userCtrl *controller.UserController) *gin.Engine {
 	routes := gin.Default()
 
-	routes.GET("", func(ctx *gin.Context) {
+	routes.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "Welcome to LMS-API"})
 	})
 
@@ -19,11 +19,11 @@ func NewRouter(userCtrl *controller.UserController) *gin.Engine {
 	})
 
 	userRouter := routes.Group("/user")
-	userRouter.GET("", userCtrl.FindAll)
+	userRouter.GET("/", userCtrl.FindAll)
 	userRouter.GET("/:UserId", userCtrl.FindById)
-	userRouter.POST("", userCtrl.Create)
+	userRouter.POST("/", userCtrl.Create)
 	userRouter.PATCH("/:UserId", userCtrl.Update)
-	userRouter.DELETE("", userCtrl.Delete)
+	userRouter.DELETE("/", userCtrl.Delete)
 
 	return routes
 }
