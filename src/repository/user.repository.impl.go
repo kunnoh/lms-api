@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/model"
@@ -25,9 +24,7 @@ func (u *UserServiceImpl) Delete(userId int) {
 // FindAll implements UserRepository.
 func (u *UserServiceImpl) FindAll() []model.User {
 	var users []model.User
-	var user model.User
-	res := u.Db.Find(&user)
-	fmt.Println(user)
+	res := u.Db.Find(&users)
 	utils.ErrorPanic(res.Error)
 	return users
 }

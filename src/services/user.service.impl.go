@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -21,9 +22,13 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 	err := u.validate.Struct(user)
 	utils.ErrorPanic(err)
 	userModel := model.User{
-		Name:  user.Name,
-		Email: user.Email,
+		Name:     user.Name,
+		Email:    user.Email,
+		Phone:    user.Phone,
+		IdNumber: user.IdNumber,
+		Password: user.Password,
 	}
+	fmt.Println(userModel)
 	u.UserRepo.Save(userModel)
 
 	return response.Response{

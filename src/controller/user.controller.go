@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -92,8 +93,9 @@ func (ctrl *UserController) Delete(ctx *gin.Context) {
 
 // FindById controller
 func (ctrl *UserController) FindById(ctx *gin.Context) {
-	userId := ctx.Param("userId")
+	userId := ctx.Param("UserId")
 	id, err := strconv.Atoi(userId)
+	fmt.Println(err)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
 			Code:   http.StatusBadRequest,

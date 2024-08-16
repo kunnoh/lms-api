@@ -23,7 +23,7 @@ func main() {
 	db := config.DbConnection()
 	validate := validator.New()
 
-	db.Table("user").AutoMigrate(&model.User{})
+	db.Table("users").AutoMigrate(&model.User{})
 
 	// repository
 	userRepo := repository.NewUserServiceImpl(db)
