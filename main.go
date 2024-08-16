@@ -29,7 +29,7 @@ func main() {
 	userRepo := repository.NewUserServiceImpl(db)
 
 	// service
-	userService := services.UserServiceImpl(userRepo, validate)
+	userService := services.NewUserServiceImpl(userRepo, validate)
 
 	// controller
 	userController := controller.NewUserController(userService)
