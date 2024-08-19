@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -9,7 +8,6 @@ import (
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/model"
 	"github.com/kunnoh/lms-api/src/repository"
-	"github.com/kunnoh/lms-api/src/utils"
 )
 
 type UserServiceImpl struct {
@@ -20,7 +18,14 @@ type UserServiceImpl struct {
 // Create implements UserService.
 func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Response {
 	err := u.validate.Struct(user)
-	utils.ErrorPanic(err)
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusBadRequest,
+			Status: "validation failed",
+			Error:  err.Error(),
+		}
+	}
+
 	userModel := model.User{
 		Name:     user.Name,
 		Email:    user.Email,
@@ -28,8 +33,15 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 		IdNumber: user.IdNumber,
 		Password: user.Password,
 	}
-	eerr := u.UserRepo.Save(userModel)
-	fmt.Println(eerr)
+	err = u.UserRepo.Save(userModel)
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusInternalServerError,
+			Status: "Error saving user",
+			Error:  err.Error(),
+		}
+	}
+
 	return response.Response{
 		Code:   http.StatusCreated,
 		Status: "success",

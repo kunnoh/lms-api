@@ -33,11 +33,8 @@ func (ctrl *UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctrl.userService.Create(createUserReq)
-	ctx.JSON(http.StatusCreated, response.Response{
-		Code:   http.StatusCreated,
-		Status: "Created",
-	})
+	res := ctrl.userService.Create(createUserReq)
+	ctx.JSON(res.Code, res)
 }
 
 // Update controller
