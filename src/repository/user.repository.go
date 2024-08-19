@@ -3,9 +3,9 @@ package repository
 import "github.com/kunnoh/lms-api/src/model"
 
 type UserRepository interface {
-	Save(user model.User)
+	Save(user model.User) (err error)
 	Update(user model.User)
-	Delete(userId int)
-	FindById(userId int) (user model.User, err error)
-	FindAll() []model.User
+	Delete(userId string)
+	FindById(userId string) (user model.User, err error)
+	FindAll() (users []model.User, err error)
 }

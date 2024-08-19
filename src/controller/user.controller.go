@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"fmt"
+	// "fmt"
 	"net/http"
-	"strconv"
+	// "strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kunnoh/lms-api/src/data/request"
@@ -53,16 +53,16 @@ func (ctrl *UserController) Update(ctx *gin.Context) {
 	}
 
 	userId := ctx.Param("userId")
-	id, err := strconv.Atoi(userId)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, response.Response{
-			Code:   http.StatusBadRequest,
-			Status: "Bad Request",
-			Error:  "Invalid user ID",
-		})
-		return
-	}
-	updateUserReq.UserId = id
+	// id, err := strconv.Atoi(userId)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, response.Response{
+	// 		Code:   http.StatusBadRequest,
+	// 		Status: "Bad Request",
+	// 		Error:  "Invalid user ID",
+	// 	})
+	// 	return
+	// }
+	updateUserReq.UserId = userId
 
 	ctrl.userService.Update(updateUserReq)
 	ctx.JSON(http.StatusOK, response.Response{
@@ -74,17 +74,17 @@ func (ctrl *UserController) Update(ctx *gin.Context) {
 // Delete controller
 func (ctrl *UserController) Delete(ctx *gin.Context) {
 	userId := ctx.Param("userId")
-	id, err := strconv.Atoi(userId)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, response.Response{
-			Code:   http.StatusBadRequest,
-			Status: "Bad Request",
-			Error:  "Invalid user ID",
-		})
-		return
-	}
+	// id, err := strconv.Atoi(userId)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, response.Response{
+	// 		Code:   http.StatusBadRequest,
+	// 		Status: "Bad Request",
+	// 		Error:  "Invalid user ID",
+	// 	})
+	// 	return
+	// }
 
-	ctrl.userService.Delete(id)
+	ctrl.userService.Delete(userId)
 	ctx.JSON(http.StatusOK, response.Response{
 		Code:   http.StatusOK,
 		Status: "OK",
@@ -94,18 +94,18 @@ func (ctrl *UserController) Delete(ctx *gin.Context) {
 // FindById controller
 func (ctrl *UserController) FindById(ctx *gin.Context) {
 	userId := ctx.Param("UserId")
-	id, err := strconv.Atoi(userId)
-	fmt.Println(err)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, response.Response{
-			Code:   http.StatusBadRequest,
-			Status: "Bad Request",
-			Error:  "Invalid user ID",
-		})
-		return
-	}
+	// id, err := strconv.Atoi(userId)
+	// fmt.Println(err)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, response.Response{
+	// 		Code:   http.StatusBadRequest,
+	// 		Status: "Bad Request",
+	// 		Error:  "Invalid user ID",
+	// 	})
+	// 	return
+	// }
 
-	userResp := ctrl.userService.FindById(id)
+	userResp := ctrl.userService.FindById(userId)
 	ctx.JSON(userResp.Code, userResp) // Return the response from the service directly
 }
 

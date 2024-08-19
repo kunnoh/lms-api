@@ -28,9 +28,8 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 		IdNumber: user.IdNumber,
 		Password: user.Password,
 	}
-	fmt.Println(userModel)
-	u.UserRepo.Save(userModel)
-
+	eerr := u.UserRepo.Save(userModel)
+	fmt.Println(eerr)
 	return response.Response{
 		Code:   http.StatusCreated,
 		Status: "success",
@@ -38,23 +37,31 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 }
 
 // Delete implements UserService.
-func (u *UserServiceImpl) Delete(UserId int) {
+func (u *UserServiceImpl) Delete(UserId string) {
 	u.UserRepo.Delete(UserId)
 }
 
 // FindAll implements UserService.
 func (u *UserServiceImpl) FindAll() response.Response {
-	res := u.UserRepo.FindAll()
-	var users []response.UserResponse
+	res, err := u.UserRepo.FindAll()
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusInternalServerError,
+			Status: "error",
+			Data:   "Failed to fetch users",
+		}
+	}
+
+	users := make([]response.UserResponse, 0, len(res)) // Preallocate slice capacity
+
 	for _, val := range res {
-		user := response.UserResponse{
+		users = append(users, response.UserResponse{
 			UserId:   val.UserId,
 			Name:     val.Name,
 			Email:    val.Email,
 			IdNumber: val.IdNumber,
 			Phone:    val.Phone,
-		}
-		users = append(users, user)
+		})
 	}
 
 	return response.Response{
@@ -65,7 +72,7 @@ func (u *UserServiceImpl) FindAll() response.Response {
 }
 
 // FindById implements UserService.
-func (u *UserServiceImpl) FindById(UserId int) response.Response {
+func (u *UserServiceImpl) FindById(UserId string) response.Response {
 	userData, err := u.UserRepo.FindById(UserId)
 	if err != nil {
 		return response.Response{

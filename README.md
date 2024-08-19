@@ -11,7 +11,7 @@ goto directory
 cd lms-api
 ```
 ## Run app
-Change `example.env` to `.env` at the root of project
+Change `example.env` to `.env` at the root folder of project
 Set the information in `.env`
 
 NOTE:
