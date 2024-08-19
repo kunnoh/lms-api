@@ -64,7 +64,7 @@ func (u *UserServiceImpl) FindAll() response.Response {
 		}
 	}
 
-	users := make([]response.UserResponse, 0, len(res)) // Preallocate slice capacity
+	users := make([]response.UserResponse, 0, len(res))
 
 	for _, val := range res {
 		users = append(users, response.UserResponse{
@@ -89,7 +89,7 @@ func (u *UserServiceImpl) FindById(UserId string) response.Response {
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusNotFound,
-			Status: "error",
+			Status: "Error",
 			Error:  "User not found",
 		}
 	}

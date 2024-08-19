@@ -37,7 +37,7 @@ func (u *UserServiceImpl) FindAll() ([]model.User, error) {
 // FindById implements UserRepository.
 func (u *UserServiceImpl) FindById(userId string) (model.User, error) {
 	var userr model.User
-	res := u.Db.Find(&userr, userId)
+	res := u.Db.First(&userr, userId)
 	if res.Error != nil {
 		return userr, res.Error
 	}
