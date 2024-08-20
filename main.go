@@ -19,8 +19,10 @@ import (
 func main() {
 	log.Info().Msg("started server")
 
+	// load environment vars
+
 	// Connect DB
-	db := config.DbConnection()
+	db := config.DbConnection(&config.Config{})
 	validate := validator.New()
 
 	db.Table("users").AutoMigrate(&model.User{})
