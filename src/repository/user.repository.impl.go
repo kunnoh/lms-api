@@ -41,10 +41,25 @@ func (u *UserServiceImpl) FindAll() ([]model.User, error) {
 // FindById implements UserRepository.
 func (u *UserServiceImpl) FindById(userId string) (model.User, error) {
 	var user model.User
-	res := u.Db.First(&user, userId)
+	res := u.Db.First(&user, "id = ?", userId)
 	if res.Error != nil {
-		return user, errors.New("user not found")
-		// return userr, res.Error
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return user, errors.New("user not found")
+		}
+		return user, res.Error
+	}
+	return user, nil
+}
+
+// FindByEmail implements UserRepository.
+func (u *UserServiceImpl) FindByEmail(email string) (model.User, error) {
+	var user model.User
+	res := u.Db.First(&user, "email = ?", email)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return user, errors.New("user not found")
+		}
+		return user, res.Error
 	}
 	return user, nil
 }

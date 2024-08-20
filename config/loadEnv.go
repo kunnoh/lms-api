@@ -18,7 +18,7 @@ type Config struct {
 	TokenSecret    string        `mapstructure:"TOKEN_SECRET"`
 }
 
-func loadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigType("env")
 	viper.SetConfigName("app")

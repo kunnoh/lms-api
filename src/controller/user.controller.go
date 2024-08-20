@@ -50,15 +50,6 @@ func (ctrl *UserController) Update(ctx *gin.Context) {
 	}
 
 	userId := ctx.Param("userId")
-	// id, err := strconv.Atoi(userId)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, response.Response{
-	// 		Code:   http.StatusBadRequest,
-	// 		Status: "Bad Request",
-	// 		Error:  "Invalid user ID",
-	// 	})
-	// 	return
-	// }
 	updateUserReq.UserId = userId
 
 	ctrl.userService.Update(updateUserReq)
@@ -71,15 +62,6 @@ func (ctrl *UserController) Update(ctx *gin.Context) {
 // Delete controller
 func (ctrl *UserController) Delete(ctx *gin.Context) {
 	userId := ctx.Param("userId")
-	// id, err := strconv.Atoi(userId)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, response.Response{
-	// 		Code:   http.StatusBadRequest,
-	// 		Status: "Bad Request",
-	// 		Error:  "Invalid user ID",
-	// 	})
-	// 	return
-	// }
 
 	ctrl.userService.Delete(userId)
 	ctx.JSON(http.StatusOK, response.Response{
@@ -91,23 +73,13 @@ func (ctrl *UserController) Delete(ctx *gin.Context) {
 // FindById controller
 func (ctrl *UserController) FindById(ctx *gin.Context) {
 	userId := ctx.Param("UserId")
-	// id, err := strconv.Atoi(userId)
-	// fmt.Println(err)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, response.Response{
-	// 		Code:   http.StatusBadRequest,
-	// 		Status: "Bad Request",
-	// 		Error:  "Invalid user ID",
-	// 	})
-	// 	return
-	// }
 
 	userResp := ctrl.userService.FindById(userId)
-	ctx.JSON(userResp.Code, userResp) // Return the response from the service directly
+	ctx.JSON(userResp.Code, userResp)
 }
 
 // FindAll controller
 func (ctrl *UserController) FindAll(ctx *gin.Context) {
 	userResp := ctrl.userService.FindAll()
-	ctx.JSON(userResp.Code, userResp) // Return the response from the service directly
+	ctx.JSON(userResp.Code, userResp)
 }
