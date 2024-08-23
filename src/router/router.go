@@ -16,7 +16,7 @@ func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthCon
 	})
 
 	routes.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "OK"})
+		ctx.JSON(http.StatusOK, struct{ Status string }{Status: "Healthy"})
 	})
 
 	authRouter := routes.Group("/auth")
@@ -24,11 +24,11 @@ func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthCon
 	authRouter.POST("/register", authCtrl.Register)
 
 	userRouter := routes.Group("/user")
-	userRouter.GET("/", userCtrl.FindAll)
+	userRouter.GET("", userCtrl.FindAll)
 	userRouter.GET("/:UserId", userCtrl.FindById)
-	userRouter.POST("/", userCtrl.Create)
+	userRouter.POST("", userCtrl.Create)
 	userRouter.PUT("/:UserId", userCtrl.Update)
-	userRouter.DELETE("/", userCtrl.Delete)
+	userRouter.DELETE("/:UserId", userCtrl.Delete)
 
 	// Catch-all route for handling 404 errors
 	routes.NoRoute(func(ctx *gin.Context) {

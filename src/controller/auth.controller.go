@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,7 @@ func NewAuthController(service services.AuthService) *AuthController {
 
 func (ctrl *AuthController) Login(ctx *gin.Context) {
 	var loginReq request.LoginRequest
+	fmt.Println(loginReq)
 	if err := ctx.ShouldBindJSON(&loginReq); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Response{
 			Code:   http.StatusBadRequest,
@@ -29,6 +31,7 @@ func (ctrl *AuthController) Login(ctx *gin.Context) {
 	}
 
 	res := ctrl.authService.Login(loginReq)
+	fmt.Println(res)
 	ctx.JSON(res.Code, res)
 }
 

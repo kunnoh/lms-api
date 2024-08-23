@@ -61,13 +61,10 @@ func (ctrl *UserController) Update(ctx *gin.Context) {
 
 // Delete controller
 func (ctrl *UserController) Delete(ctx *gin.Context) {
-	userId := ctx.Param("userId")
+	userId := ctx.Param("UserId")
 
-	ctrl.userService.Delete(userId)
-	ctx.JSON(http.StatusOK, response.Response{
-		Code:   http.StatusOK,
-		Status: "OK",
-	})
+	delResp := ctrl.userService.Delete(userId)
+	ctx.JSON(delResp.Code, delResp)
 }
 
 // FindById controller

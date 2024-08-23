@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"os"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
@@ -44,12 +44,12 @@ func main() {
 	// routes
 	route := routes.NewRouter(userController, authController)
 
-	PORT := os.Getenv("PORT")
-	if PORT == "" {
-		PORT = "7755"
-	}
+	PORT := confg.Port
+	// if PORT == "" {
+	// 	PORT = "7755"
+	// }
 	server := &http.Server{
-		Addr:    ":" + PORT,
+		Addr:    ":" + strconv.Itoa(PORT),
 		Handler: route,
 	}
 

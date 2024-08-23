@@ -50,8 +50,20 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 }
 
 // Delete implements UserService.
-func (u *UserServiceImpl) Delete(UserId string) {
-	u.UserRepo.Delete(UserId)
+func (u *UserServiceImpl) Delete(UserId string) response.Response {
+	res := u.UserRepo.Delete(UserId)
+	if res != nil {
+		return response.Response{
+			Code:   http.StatusInternalServerError,
+			Status: "error",
+			Data:   "Failed to delete user",
+		}
+	}
+
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "user deleted",
+	}
 }
 
 // FindAll implements UserService.

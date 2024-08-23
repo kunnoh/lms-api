@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/model"
@@ -18,11 +19,18 @@ func NewUserServiceImpl(Db *gorm.DB) UserRepository {
 }
 
 // Delete implements UserRepository.
-func (u *UserServiceImpl) Delete(userId string) {
-	var user model.User
-	res := u.Db.Where("id = ?", userId).Delete(&user)
-	utils.ErrorPanic(res.Error)
+func (u *UserServiceImpl) Delete(userId string) error {
+	res := u.Db.Where("user_id = ?", userId).Delete(&model.User{})
 
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return fmt.Errorf("no user found with id %s", userId)
+	}
+
+	return nil
 }
 
 // FindAll implements UserRepository.
@@ -41,7 +49,7 @@ func (u *UserServiceImpl) FindAll() ([]model.User, error) {
 // FindById implements UserRepository.
 func (u *UserServiceImpl) FindById(userId string) (model.User, error) {
 	var user model.User
-	res := u.Db.First(&user, "id = ?", userId)
+	res := u.Db.First(&user, "user_id = ?", userId)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return user, errors.New("user not found")
