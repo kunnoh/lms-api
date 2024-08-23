@@ -8,7 +8,7 @@ import (
 	"github.com/kunnoh/lms-api/src/data/response"
 )
 
-func NewRouter(userCtrl *controller.UserController) *gin.Engine {
+func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
 	routes := gin.Default()
 
 	routes.GET("/", func(ctx *gin.Context) {
@@ -19,11 +19,15 @@ func NewRouter(userCtrl *controller.UserController) *gin.Engine {
 		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "OK"})
 	})
 
+	authRouter := routes.Group("/auth")
+	authRouter.POST("/login", authCtrl.Login)
+	authRouter.POST("/register", authCtrl.Register)
+
 	userRouter := routes.Group("/user")
 	userRouter.GET("/", userCtrl.FindAll)
 	userRouter.GET("/:UserId", userCtrl.FindById)
 	userRouter.POST("/", userCtrl.Create)
-	userRouter.PATCH("/:UserId", userCtrl.Update)
+	userRouter.PUT("/:UserId", userCtrl.Update)
 	userRouter.DELETE("/", userCtrl.Delete)
 
 	// Catch-all route for handling 404 errors

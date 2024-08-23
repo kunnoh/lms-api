@@ -33,6 +33,7 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 		IdNumber: user.IdNumber,
 		Password: user.Password,
 	}
+
 	err = u.UserRepo.Save(userModel)
 	if err != nil {
 		return response.Response{
