@@ -1,6 +1,7 @@
 package main
 
 import (
+	logg "log"
 	"net/http"
 	"strconv"
 
@@ -26,7 +27,10 @@ func main() {
 	}
 
 	// Connect DB
-	db := config.DbConnection(&confg)
+	db, db_err := config.DbConnection(&confg)
+	if db_err != nil {
+		logg.Fatalf("ERROR: %v", db_err)
+	}
 	db.Table("users").AutoMigrate(&model.User{})
 
 	// repository
@@ -45,9 +49,7 @@ func main() {
 	route := routes.NewRouter(userController, authController)
 
 	PORT := confg.Port
-	// if PORT == "" {
-	// 	PORT = "7755"
-	// }
+
 	server := &http.Server{
 		Addr:    ":" + strconv.Itoa(PORT),
 		Handler: route,
