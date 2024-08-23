@@ -109,7 +109,7 @@ func (a *AuthServiceImpl) Register(user request.CreateUserRequest) response.Resp
 		return response.Response{
 			Code:   http.StatusInternalServerError,
 			Status: "Error saving user",
-			Error:  err.Error(),
+			Error:  errr.Error(),
 		}
 	}
 	return response.Response{

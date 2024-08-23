@@ -18,6 +18,7 @@ func GenerateToken(ttl time.Duration, payload interface{}, secret string) (strin
 	claim["iat"] = now.Unix()
 	claim["nbf"] = now.Unix()
 
+	// generate signed token str
 	tokenStr, err := token.SignedString([]byte(secret))
 
 	if err != nil {
