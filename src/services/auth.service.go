@@ -44,7 +44,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Error logging user",
+			Status: "Error login user",
 			Error:  err.Error(),
 		}
 	}
@@ -53,7 +53,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if verify_err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Error logging user",
+			Status: "Error login user",
 			Error:  verify_err.Error(),
 		}
 	}
@@ -61,12 +61,12 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	config, _ := config.LoadConfig(".")
 
 	// generate token
-	token, err_token := utils.GenerateToken(config.TokenExpiresIn, u.UserId, config.TokenSecret)
+	token, err_token := utils.GenerateToken(config.TokenExpiresIn, u.UserId)
 
 	if err_token != nil {
 		return response.Response{
 			Code:   http.StatusBadRequest,
-			Status: "authorization failed",
+			Status: "validation failed",
 			Error:  err_token.Error(),
 		}
 	} else {

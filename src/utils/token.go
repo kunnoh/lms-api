@@ -7,19 +7,25 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func GenerateToken(ttl time.Duration, payload interface{}, secret string) (string, error) {
-	token := jwt.New(jwt.SigningMethodES256)
+func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
+	privateKey, err := loadKey("./keys/ecdsa_private_key.pem")
+
+	if err != nil {
+		return "", fmt.Errorf("error loading private key: %w", err)
+	}
 
 	now := time.Now().UTC()
-	claim := token.Claims.(jwt.MapClaims)
-
-	claim["sub"] = payload
-	claim["exp"] = now.Add(ttl).Unix()
-	claim["iat"] = now.Unix()
-	claim["nbf"] = now.Unix()
+	claims := jwt.MapClaims{
+		"exp": now.Add(ttl).Unix(),
+		"iat": now.Unix(),
+		"sub": payload,
+		// "name": payload,
+		"admin": true,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 
 	// generate signed token str
-	tokenStr, err := token.SignedString([]byte(secret))
+	tokenStr, err := token.SignedString(privateKey)
 
 	if err != nil {
 		return "", fmt.Errorf("error generating token: %w", err)

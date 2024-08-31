@@ -31,7 +31,6 @@ func (ctrl *AuthController) Login(ctx *gin.Context) {
 	}
 
 	res := ctrl.authService.Login(loginReq)
-	fmt.Println(res)
 	ctx.JSON(res.Code, res)
 }
 

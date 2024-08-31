@@ -32,5 +32,15 @@ make dev
 make build
 ```
 
+### Genarate ECDSA keys
+Create private key
+```sh
+openssl ecparam -genkey -name prime256v1 -noout -out ecdsa_private_key.pem
+```
+
+Generate public key
+```sh
+openssl ec -in ecdsa_private_key.pem -pubout -out ecdsa_public_key.pem
+```
 
 
