@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/ecdsa"
 	"fmt"
 	"time"
 
@@ -8,7 +9,8 @@ import (
 )
 
 func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
-	privateKey, err := loadKey("./keys/ecdsa_private_key.pem")
+	// Load the private key
+	privateKey, err := loadPrivateKey("./keys/ecdsa_private_key.pem")
 
 	if err != nil {
 		return "", fmt.Errorf("error loading private key: %w", err)
@@ -33,22 +35,24 @@ func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
 	return tokenStr, nil
 }
 
-func ValidateToken(token string, signedKey string) (interface{}, error) {
-	tok, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected method: %s", t.Header["alg"])
+func ValidateToken(tokenString string, publicKey *ecdsa.PublicKey) (*jwt.Token, error) {
+	// Load the public key
+	publicKey, err := loadPublicKey("./keys/ecdsa_public_key.pem")
+	if err != nil {
+		return nil, fmt.Errorf("error loading public key")
+	}
+
+	// Verify token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(signedKey), nil
+		return publicKey, nil
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("invalid token %w", err)
+		return nil, err
 	}
 
-	claims, ok := tok.Claims.(jwt.MapClaims)
-
-	if !ok || !tok.Valid {
-		return nil, fmt.Errorf("invalid token claim")
-	}
-	return claims["sub"], nil
+	return token, nil
 }
