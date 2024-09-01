@@ -40,17 +40,10 @@ func DeserializeUser(usersRepo repository.UserRepository) gin.HandlerFunc {
 			fmt.Println("Invalid token")
 		}
 
-		fmt.Println("Audience:", claims["aud"])
-		fmt.Println("Expiration:", claims["exp"])
-		fmt.Println("Issuer:", claims["iss"])
-		fmt.Println("Role:", claims["role"])
-		fmt.Println("Subject:", claims["sub"])
-		fmt.Println("IssuedAt:", claims["iat"])
-
 		// Get the user ID from the claims and cast it to a string
 		userId, ok := claims["sub"].(string)
 		if !ok {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": http.StatusForbidden, "status": "fail", "error": "invalid user ID in token"})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": http.StatusForbidden, "status": "fail", "error": "invalid token"})
 			return
 		}
 
@@ -64,8 +57,9 @@ func DeserializeUser(usersRepo repository.UserRepository) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"code": http.StatusInternalServerError, "status": "fail", "error": "error retrieving user"})
 			return
 		}
-		fmt.Println("USER: \t: %w", user)
-		ctx.Set("currentUser", user)
+
+		ctx.Set("currentUser", user.Email)
+		ctx.Set("currentUserID", user.UserId)
 		ctx.Next()
 
 	}

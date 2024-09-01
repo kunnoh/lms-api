@@ -28,10 +28,10 @@ func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserCon
 
 	userRouter := routes.Group("/user")
 	userRouter.GET("", middleware.DeserializeUser(usersRepo), userCtrl.FindAll)
-	userRouter.GET("/:UserId", userCtrl.FindById)
-	userRouter.POST("", userCtrl.Create)
-	userRouter.PUT("/:UserId", userCtrl.Update)
-	userRouter.DELETE("/:UserId", userCtrl.Delete)
+	userRouter.GET("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.FindById)
+	userRouter.POST("", middleware.DeserializeUser(usersRepo), userCtrl.Create)
+	userRouter.PUT("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.Update)
+	userRouter.DELETE("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.Delete)
 
 	// Catch-all route for handling 404 errors
 	routes.NoRoute(func(ctx *gin.Context) {
