@@ -37,7 +37,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusBadRequest,
-			Status: "validation failed",
+			Status: "fail",
 			Error:  err.Error(),
 		}
 	}
@@ -46,7 +46,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Incorrect username or password",
+			Status: "fail",
 			Error:  "Incorrect username or password",
 		}
 	}
@@ -55,7 +55,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if verify_err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Incorrect username or password",
+			Status: "fail",
 			Error:  verify_err.Error(),
 		}
 	}

@@ -10,7 +10,7 @@ import (
 	"github.com/kunnoh/lms-api/src/repository"
 )
 
-func NewRouter(userRepo *repository.UserRepository, userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
+func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
 	routes := gin.Default()
 
 	routes.GET("/", func(ctx *gin.Context) {
@@ -27,7 +27,7 @@ func NewRouter(userRepo *repository.UserRepository, userCtrl *controller.UserCon
 	authRouter.GET("/refresh-token", authCtrl.RefreshToken)
 
 	userRouter := routes.Group("/user")
-	userRouter.GET("", middleware.DeserializeUser(userRepo), userCtrl.FindAll)
+	userRouter.GET("", middleware.DeserializeUser(usersRepo), userCtrl.FindAll)
 	userRouter.GET("/:UserId", userCtrl.FindById)
 	userRouter.POST("", userCtrl.Create)
 	userRouter.PUT("/:UserId", userCtrl.Update)

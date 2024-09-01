@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
 // custom claims
 type CustomClaims struct {
-	UserID string `json:"user_id"`
-	Role   string `json:"role"`
-	jwt.StandardClaims
+	Role string `json:"role"`
+	jwt.Claims
 }
 
 func GenerateToken(ttl time.Duration, userId uuid.UUID) (string, error) {
@@ -23,17 +22,19 @@ func GenerateToken(ttl time.Duration, userId uuid.UUID) (string, error) {
 		return "", fmt.Errorf("error loading private key: %w", err)
 	}
 
+	token := jwt.New(jwt.SigningMethodES256)
 	now := time.Now().UTC()
-	claims := jwt.MapClaims{
-		"exp":  now.Add(ttl).Unix(),
-		"nbf":  now.Unix(),
-		"iat":  now.Unix(),
-		"iss":  "https://lmsapi.com",
-		"aud":  "lms-api",
-		"sub":  userId,
-		"role": "moderator",
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+
+	claims := token.Claims.(jwt.MapClaims)
+	iat := now.Unix()
+	exp := now.Add(ttl).Unix()
+
+	claims["role"] = "moderator"
+	claims["exp"] = exp
+	claims["iat"] = iat
+	claims["iss"] = "https://lmsapi.com"
+	claims["aud"] = "lms-api"
+	claims["sub"] = userId
 
 	// generate signed token str
 	tokenStr, err := token.SignedString(privateKey)
@@ -60,7 +61,8 @@ func ValidateToken(tokenString string) (*jwt.Token, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
+		return nil, fmt.Errorf("token is expired")
 	}
 
 	return token, nil
