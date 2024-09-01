@@ -15,6 +15,7 @@ import (
 type AuthService interface {
 	Login(user request.LoginRequest) response.Response
 	Register(user request.CreateUserRequest) response.Response
+	RefreshToken(user request.CreateUserRequest) response.Response
 }
 
 type AuthServiceImpl struct {
@@ -26,6 +27,7 @@ func NewAuthServiceImpl(userRepo repository.UserRepository, validate *validator.
 	return &AuthServiceImpl{
 		UserRepo: userRepo,
 		Validate: validate,
+		// Config: config.Config,
 	}
 }
 
@@ -44,8 +46,8 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Error login user",
-			Error:  err.Error(),
+			Status: "Incorrect username or password",
+			Error:  "Incorrect username or password",
 		}
 	}
 
@@ -53,7 +55,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	if verify_err != nil {
 		return response.Response{
 			Code:   http.StatusUnauthorized,
-			Status: "Error login user",
+			Status: "Incorrect username or password",
 			Error:  verify_err.Error(),
 		}
 	}
@@ -61,9 +63,10 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 	config, _ := config.LoadConfig(".")
 
 	// generate token
-	token, err_token := utils.GenerateToken(config.TokenExpiresIn, u.UserId)
+	token, err_tok := utils.GenerateToken(config.TokenExpiresIn, u.UserId)
+	refreshtoken, err_token := utils.GenerateToken(config.RefreshTokenExpiresIn, u.UserId)
 
-	if err_token != nil {
+	if err_token != nil || err_tok != nil {
 		return response.Response{
 			Code:   http.StatusBadRequest,
 			Status: "validation failed",
@@ -71,8 +74,9 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 		}
 	} else {
 		res := response.LoginResponse{
-			TokenType: "Bearer",
-			Token:     token,
+			TokenType:    "Bearer",
+			Token:        token,
+			RefreshToken: refreshtoken,
 		}
 		return response.Response{
 			Code:   http.StatusOK,
@@ -94,17 +98,23 @@ func (a *AuthServiceImpl) Register(user request.CreateUserRequest) response.Resp
 	}
 
 	hashedPW, err := utils.HashPassword(user.Password)
-	utils.ErrorPanic(err)
-
-	newUser := model.User{
-		Email:    user.Email,
-		Password: hashedPW,
-		Name:     user.Name,
-		Phone:    user.Phone,
-		IdNumber: user.IdNumber,
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusBadRequest,
+			Status: "Hashing password failed",
+			Error:  err.Error(),
+		}
 	}
 
-	errr := a.UserRepo.Save(newUser)
+	newUser := model.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Phone:    user.Phone,
+		IdNumber: user.IdNumber,
+		Password: string(hashedPW),
+	}
+
+	savedUser, errr := a.UserRepo.Save(newUser)
 	if errr != nil {
 		return response.Response{
 			Code:   http.StatusInternalServerError,
@@ -112,8 +122,24 @@ func (a *AuthServiceImpl) Register(user request.CreateUserRequest) response.Resp
 			Error:  errr.Error(),
 		}
 	}
+
 	return response.Response{
 		Code:   http.StatusCreated,
+		Status: "success",
+		Data: response.UserResponse{
+			UserId:   savedUser.UserId,
+			Email:    savedUser.Email,
+			Name:     savedUser.Name,
+			Phone:    savedUser.Phone,
+			IdNumber: savedUser.IdNumber,
+		},
+	}
+}
+
+// Refresh impements AuthService.
+func (a *AuthServiceImpl) RefreshToken(user request.CreateUserRequest) response.Response {
+	return response.Response{
+		Code:   http.StatusOK,
 		Status: "success",
 	}
 }

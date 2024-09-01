@@ -46,3 +46,7 @@ func (ctrl *AuthController) Register(ctx *gin.Context) {
 	res := ctrl.authService.Register(registerReq)
 	ctx.JSON(res.Code, res)
 }
+
+func (ctrl *AuthController) RefreshToken(ctx *gin.Context) {
+
+}

@@ -22,6 +22,7 @@ func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthCon
 	authRouter := routes.Group("/auth")
 	authRouter.POST("/login", authCtrl.Login)
 	authRouter.POST("/register", authCtrl.Register)
+	authRouter.GET("/refresh-token", authCtrl.RefreshToken)
 
 	userRouter := routes.Group("/user")
 	userRouter.GET("", userCtrl.FindAll)

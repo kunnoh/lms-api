@@ -26,7 +26,7 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 		}
 	}
 
-	userModel := model.User{
+	newUser := model.User{
 		Name:     user.Name,
 		Email:    user.Email,
 		Phone:    user.Phone,
@@ -34,7 +34,7 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 		Password: user.Password,
 	}
 
-	err = u.UserRepo.Save(userModel)
+	savedUser, err := u.UserRepo.Save(newUser)
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusInternalServerError,
@@ -46,6 +46,13 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 	return response.Response{
 		Code:   http.StatusCreated,
 		Status: "success",
+		Data: response.UserResponse{
+			UserId:   savedUser.UserId,
+			Email:    savedUser.Email,
+			Name:     savedUser.Name,
+			Phone:    savedUser.Phone,
+			IdNumber: savedUser.IdNumber,
+		},
 	}
 }
 
@@ -107,17 +114,16 @@ func (u *UserServiceImpl) FindById(UserId string) response.Response {
 		}
 	}
 
-	userRes := response.UserResponse{
-		UserId:   userData.UserId,
-		Name:     userData.Name,
-		Email:    userData.Email,
-		Phone:    userData.Phone,
-		IdNumber: userData.IdNumber,
-	}
 	return response.Response{
 		Code:   http.StatusOK,
 		Status: "success",
-		Data:   userRes,
+		Data: response.UserResponse{
+			UserId:   userData.UserId,
+			Name:     userData.Name,
+			Email:    userData.Email,
+			Phone:    userData.Phone,
+			IdNumber: userData.IdNumber,
+		},
 	}
 }
 

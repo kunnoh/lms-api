@@ -73,12 +73,12 @@ func (u *UserServiceImpl) FindByEmail(email string) (model.User, error) {
 }
 
 // Save implements UserRepository.
-func (u *UserServiceImpl) Save(user model.User) error {
+func (u *UserServiceImpl) Save(user model.User) (model.User, error) {
 	res := u.Db.Create(&user)
 	if res.Error != nil {
-		return res.Error
+		return user, res.Error
 	}
-	return nil
+	return user, nil
 }
 
 // Update implements UserRepository.
