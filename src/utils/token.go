@@ -1,14 +1,21 @@
 package utils
 
 import (
-	"crypto/ecdsa"
 	"fmt"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
-func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
+// custom claims
+type CustomClaims struct {
+	UserID string `json:"user_id"`
+	Role   string `json:"role"`
+	jwt.StandardClaims
+}
+
+func GenerateToken(ttl time.Duration, userId uuid.UUID) (string, error) {
 	// Load the private key
 	privateKey, err := loadPrivateKey("./keys/ecdsa_private_key.pem")
 
@@ -18,11 +25,13 @@ func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
 
 	now := time.Now().UTC()
 	claims := jwt.MapClaims{
-		"exp": now.Add(ttl).Unix(),
-		"iat": now.Unix(),
-		"sub": payload,
-		// "name": payload,
-		"admin": true,
+		"exp":  now.Add(ttl).Unix(),
+		"nbf":  now.Unix(),
+		"iat":  now.Unix(),
+		"iss":  "https://lmsapi.com",
+		"aud":  "lms-api",
+		"sub":  userId,
+		"role": "moderator",
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 
@@ -35,11 +44,11 @@ func GenerateToken(ttl time.Duration, payload interface{}) (string, error) {
 	return tokenStr, nil
 }
 
-func ValidateToken(tokenString string, publicKey *ecdsa.PublicKey) (*jwt.Token, error) {
+func ValidateToken(tokenString string) (*jwt.Token, error) {
 	// Load the public key
 	publicKey, err := loadPublicKey("./keys/ecdsa_public_key.pem")
 	if err != nil {
-		return nil, fmt.Errorf("error loading public key")
+		return nil, fmt.Errorf("error loading public key: %v", err)
 	}
 
 	// Verify token

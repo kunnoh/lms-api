@@ -46,7 +46,7 @@ func main() {
 	userController := controller.NewUserController(userService)
 
 	// routes
-	route := routes.NewRouter(userController, authController)
+	route := routes.NewRouter(&userRepo, userController, authController)
 
 	PORT := confg.Port
 

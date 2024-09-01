@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kunnoh/lms-api/src/controller"
 	"github.com/kunnoh/lms-api/src/data/response"
+	"github.com/kunnoh/lms-api/src/middleware"
+	"github.com/kunnoh/lms-api/src/repository"
 )
 
-func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
+func NewRouter(userRepo *repository.UserRepository, userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
 	routes := gin.Default()
 
 	routes.GET("/", func(ctx *gin.Context) {
@@ -25,7 +27,7 @@ func NewRouter(userCtrl *controller.UserController, authCtrl *controller.AuthCon
 	authRouter.GET("/refresh-token", authCtrl.RefreshToken)
 
 	userRouter := routes.Group("/user")
-	userRouter.GET("", userCtrl.FindAll)
+	userRouter.GET("", middleware.DeserializeUser(userRepo), userCtrl.FindAll)
 	userRouter.GET("/:UserId", userCtrl.FindById)
 	userRouter.POST("", userCtrl.Create)
 	userRouter.PUT("/:UserId", userCtrl.Update)
