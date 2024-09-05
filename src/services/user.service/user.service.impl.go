@@ -7,15 +7,15 @@ import (
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/model"
-	"github.com/kunnoh/lms-api/src/repository"
+	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 )
 
 type UserServiceImpl struct {
-	UserRepo repository.UserRepository
+	UserRepo userrepository.UserRepository
 	validate *validator.Validate
 }
 
-func NewUserServiceImpl(userRepository repository.UserRepository, validate *validator.Validate) UserService {
+func NewUserServiceImpl(userRepository userrepository.UserRepository, validate *validator.Validate) UserService {
 	return &UserServiceImpl{
 		UserRepo: userRepository,
 		validate: validate,
@@ -42,6 +42,7 @@ func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Respon
 	}
 
 	savedUser, err := u.UserRepo.Save(newUser)
+
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusInternalServerError,

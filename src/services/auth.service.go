@@ -8,7 +8,7 @@ import (
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/model"
-	"github.com/kunnoh/lms-api/src/repository"
+	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 	"github.com/kunnoh/lms-api/src/utils"
 )
 
@@ -19,11 +19,11 @@ type AuthService interface {
 }
 
 type AuthServiceImpl struct {
-	UserRepo repository.UserRepository
+	UserRepo userrepository.UserRepository
 	Validate *validator.Validate
 }
 
-func NewAuthServiceImpl(userRepo repository.UserRepository, validate *validator.Validate) AuthService {
+func NewAuthServiceImpl(userRepo userrepository.UserRepository, validate *validator.Validate) AuthService {
 	return &AuthServiceImpl{
 		UserRepo: userRepo,
 		Validate: validate,

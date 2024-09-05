@@ -1,14 +1,11 @@
 package controller
 
 import (
-	// "fmt"
 	"net/http"
-	// "strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
-	"github.com/kunnoh/lms-api/src/services"
 	userservice "github.com/kunnoh/lms-api/src/services/user.service"
 )
 
@@ -16,7 +13,7 @@ type UserController struct {
 	userService userservice.UserService
 }
 
-func NewUserController(service services.UserService) *UserController {
+func NewUserController(service userservice.UserService) *UserController {
 	return &UserController{
 		userService: service,
 	}

@@ -38,7 +38,6 @@ func (u *UserServiceImpl) FindAll() ([]model.User, error) {
 	var users []model.User
 	res := u.Db.Find(&users)
 
-	// Handle any error that occurs during the database query
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -49,7 +48,9 @@ func (u *UserServiceImpl) FindAll() ([]model.User, error) {
 // FindById implements UserRepository.
 func (u *UserServiceImpl) FindById(userId string) (model.User, error) {
 	var user model.User
+
 	res := u.Db.First(&user, "user_id = ?", userId)
+
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return user, errors.New("user not found")
@@ -62,7 +63,9 @@ func (u *UserServiceImpl) FindById(userId string) (model.User, error) {
 // FindByEmail implements UserRepository.
 func (u *UserServiceImpl) FindByEmail(email string) (model.User, error) {
 	var user model.User
+
 	res := u.Db.First(&user, "email = ?", email)
+
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			return user, errors.New("user not found")
@@ -75,6 +78,7 @@ func (u *UserServiceImpl) FindByEmail(email string) (model.User, error) {
 // Save implements UserRepository.
 func (u *UserServiceImpl) Save(user model.User) (model.User, error) {
 	res := u.Db.Create(&user)
+
 	if res.Error != nil {
 		return user, res.Error
 	}

@@ -11,8 +11,8 @@ import (
 	"github.com/kunnoh/lms-api/config"
 	"github.com/kunnoh/lms-api/src/controller"
 	"github.com/kunnoh/lms-api/src/model"
-	"github.com/kunnoh/lms-api/src/repository"
 	bookrepository "github.com/kunnoh/lms-api/src/repository/book.repository"
+	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 	routes "github.com/kunnoh/lms-api/src/router"
 	"github.com/kunnoh/lms-api/src/services"
 	bookservice "github.com/kunnoh/lms-api/src/services/book.service"
@@ -34,11 +34,10 @@ func main() {
 	if db_err != nil {
 		logg.Fatalf("ERROR: %v", db_err)
 	}
-	db.Table("users").AutoMigrate(&model.User{})
-	db.Table("books").AutoMigrate(&model.Book{})
+	db.Table("users").AutoMigrate(&model.User{}, &model.Book{})
 
 	// repository
-	userRepo := repository.NewUserServiceImpl(db)
+	userRepo := userrepository.NewUserServiceImpl(db)
 	bookRepo := bookrepository.NewBookRepositoryImpl(db)
 
 	// service

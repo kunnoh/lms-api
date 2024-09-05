@@ -1,8 +1,12 @@
 package bookservice
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
+	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
+	"github.com/kunnoh/lms-api/src/model"
 	bookrepository "github.com/kunnoh/lms-api/src/repository/book.repository"
 )
 
@@ -19,8 +23,37 @@ func NewBookServiceImpl(bookRepository bookrepository.BookRepository, validate *
 }
 
 // Create implements BookService.
-func (b *BookServiceImpl) Create() response.Response {
-	panic("unimplemented")
+func (b *BookServiceImpl) Create(book request.CreateBookRequest) response.Response {
+	err := b.validate.Struct(book)
+
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusBadRequest,
+			Status: "validation failed",
+			Error:  err.Error(),
+		}
+	}
+
+	newBook := model.Book{}
+
+	savedBk, err := b.BookRepo.Save(newBook)
+
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusInternalServerError,
+			Status: "Error saving the book",
+			Error:  err.Error(),
+		}
+	}
+
+	return response.Response{
+		Code:   http.StatusCreated,
+		Status: "success",
+		Data: response.BookResponse{
+			BookId: savedBk.BookId,
+			Title:  savedBk.Title,
+		},
+	}
 }
 
 // Delete implements BookService.
@@ -30,7 +63,30 @@ func (b *BookServiceImpl) Delete(BookId string) response.Response {
 
 // FindAll implements BookService.
 func (b *BookServiceImpl) FindAll() response.Response {
-	panic("unimplemented")
+	res, err := b.BookRepo.FindAll()
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusInternalServerError,
+			Status: "error",
+			Error:  "Failed to fetch books",
+		}
+	}
+
+	books := make([]response.BookResponse, 0, len(res))
+
+	for _, val := range res {
+		books = append(books, response.BookResponse{
+			BookId: val.BookId,
+			Title:  val.Title,
+		})
+	}
+
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "success",
+		Data:   books,
+	}
+
 }
 
 // FindById implements BookService.

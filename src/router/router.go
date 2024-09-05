@@ -7,10 +7,10 @@ import (
 	"github.com/kunnoh/lms-api/src/controller"
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/middleware"
-	"github.com/kunnoh/lms-api/src/repository"
+	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 )
 
-func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserController, bookCtrl *controller.BookController, authCtrl *controller.AuthController) *gin.Engine {
+func NewRouter(usersRepo userrepository.UserRepository, userCtrl *controller.UserController, bookCtrl *controller.BookController, authCtrl *controller.AuthController) *gin.Engine {
 	routes := gin.Default()
 
 	routes.GET("/", func(ctx *gin.Context) {
@@ -34,6 +34,7 @@ func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserCon
 	userRouter.DELETE("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.Delete)
 
 	bookRouter := routes.Group("/books")
+	// bookRouter.GET("", bookCtrl.FindAll)
 	bookRouter.GET("", middleware.DeserializeUser(usersRepo), bookCtrl.FindAll)
 	bookRouter.GET("/:BookId", middleware.DeserializeUser(usersRepo), bookCtrl.FindById)
 	bookRouter.POST("", middleware.DeserializeUser(usersRepo), bookCtrl.Create)

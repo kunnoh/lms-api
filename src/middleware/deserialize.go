@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/kunnoh/lms-api/src/repository"
+	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 	"github.com/kunnoh/lms-api/src/utils"
 )
 
-func DeserializeUser(usersRepo repository.UserRepository) gin.HandlerFunc {
+func DeserializeUser(usersRepo userrepository.UserRepository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var token string
 		authHeader := ctx.Request.Header.Get("Authorization")
