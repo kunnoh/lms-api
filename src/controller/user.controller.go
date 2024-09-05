@@ -9,10 +9,11 @@ import (
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/services"
+	userservice "github.com/kunnoh/lms-api/src/services/user.service"
 )
 
 type UserController struct {
-	userService services.UserService
+	userService userservice.UserService
 }
 
 func NewUserController(service services.UserService) *UserController {

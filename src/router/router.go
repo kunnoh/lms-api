@@ -10,7 +10,7 @@ import (
 	"github.com/kunnoh/lms-api/src/repository"
 )
 
-func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserController, authCtrl *controller.AuthController) *gin.Engine {
+func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserController, bookCtrl *controller.BookController, authCtrl *controller.AuthController) *gin.Engine {
 	routes := gin.Default()
 
 	routes.GET("/", func(ctx *gin.Context) {
@@ -32,6 +32,13 @@ func NewRouter(usersRepo repository.UserRepository, userCtrl *controller.UserCon
 	userRouter.POST("", middleware.DeserializeUser(usersRepo), userCtrl.Create)
 	userRouter.PUT("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.Update)
 	userRouter.DELETE("/:UserId", middleware.DeserializeUser(usersRepo), userCtrl.Delete)
+
+	bookRouter := routes.Group("/books")
+	bookRouter.GET("", middleware.DeserializeUser(usersRepo), bookCtrl.FindAll)
+	bookRouter.GET("/:BookId", middleware.DeserializeUser(usersRepo), bookCtrl.FindById)
+	bookRouter.POST("", middleware.DeserializeUser(usersRepo), bookCtrl.Create)
+	bookRouter.PUT("/:BookId", middleware.DeserializeUser(usersRepo), bookCtrl.Update)
+	bookRouter.DELETE("/:BookId", middleware.DeserializeUser(usersRepo), bookCtrl.Delete)
 
 	// Catch-all route for handling 404 errors
 	routes.NoRoute(func(ctx *gin.Context) {

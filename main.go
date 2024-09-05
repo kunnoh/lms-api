@@ -12,8 +12,11 @@ import (
 	"github.com/kunnoh/lms-api/src/controller"
 	"github.com/kunnoh/lms-api/src/model"
 	"github.com/kunnoh/lms-api/src/repository"
+	bookrepository "github.com/kunnoh/lms-api/src/repository/book.repository"
 	routes "github.com/kunnoh/lms-api/src/router"
 	"github.com/kunnoh/lms-api/src/services"
+	bookservice "github.com/kunnoh/lms-api/src/services/book.service"
+	userservice "github.com/kunnoh/lms-api/src/services/user.service"
 	"github.com/kunnoh/lms-api/src/utils"
 )
 
@@ -32,21 +35,25 @@ func main() {
 		logg.Fatalf("ERROR: %v", db_err)
 	}
 	db.Table("users").AutoMigrate(&model.User{})
+	db.Table("books").AutoMigrate(&model.Book{})
 
 	// repository
 	userRepo := repository.NewUserServiceImpl(db)
+	bookRepo := bookrepository.NewBookRepositoryImpl(db)
 
 	// service
 	validate := validator.New()
-	userService := services.NewUserServiceImpl(userRepo, validate)
+	userService := userservice.NewUserServiceImpl(userRepo, validate)
+	bookService := bookservice.NewBookServiceImpl(bookRepo, validate)
 	authService := services.NewAuthServiceImpl(userRepo, validate)
 
 	// controller
 	authController := controller.NewAuthController(authService)
 	userController := controller.NewUserController(userService)
+	bookController := controller.NewBookController(bookService)
 
 	// routes
-	route := routes.NewRouter(userRepo, userController, authController)
+	route := routes.NewRouter(userRepo, userController, bookController, authController)
 
 	PORT := confg.Port
 
