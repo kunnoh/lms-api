@@ -80,7 +80,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 		}
 		return response.Response{
 			Code:   http.StatusOK,
-			Status: "authorized",
+			Status: "success",
 			Data:   res,
 		}
 	}
