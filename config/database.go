@@ -21,8 +21,9 @@ func DbConnection(c *Config) (*gorm.DB, error) {
 		if err == nil {
 			break
 		}
-		log.Printf("Failed to connect to database, retrying in %d seconds...", (1 << i)) // Exponential backoff
-		time.Sleep(time.Duration(1<<i) * time.Second)
+		waitTime := time.Duration(1<<i) * time.Second
+		log.Printf("Attempt %d: Failed to connect to database, retrying in %v...", i+1, waitTime)
+		time.Sleep(waitTime)
 	}
 
 	if err != nil {

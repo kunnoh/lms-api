@@ -51,10 +51,10 @@ func DeserializeUser(usersRepo userrepository.UserRepository) gin.HandlerFunc {
 		user, err := usersRepo.FindById(userId)
 		if err != nil {
 			if err.Error() == "user not found" {
-				ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "status": "fail", "error": "user not found"})
+				ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"code": http.StatusUnauthorized, "status": "fail", "error": "you are not logged in"})
 				return
 			}
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"code": http.StatusInternalServerError, "status": "fail", "error": "error retrieving user"})
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"code": http.StatusInternalServerError, "status": "fail", "error": "error in login in"})
 			return
 		}
 

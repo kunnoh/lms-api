@@ -34,7 +34,14 @@ func main() {
 	if db_err != nil {
 		logg.Fatalf("ERROR: %v", db_err)
 	}
-	db.Table("users").AutoMigrate(&model.User{}, &model.Book{})
+
+	if err := db.Table("users").AutoMigrate(&model.User{}); err != nil {
+		utils.ErrorPanic(err)
+	}
+
+	if err := db.Table("books").AutoMigrate(&model.Book{}); err != nil {
+		utils.ErrorPanic(err)
+	}
 
 	// repository
 	userRepo := userrepository.NewUserServiceImpl(db)

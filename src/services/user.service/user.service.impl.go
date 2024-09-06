@@ -25,6 +25,7 @@ func NewUserServiceImpl(userRepository userrepository.UserRepository, validate *
 // Create implements UserService.
 func (u *UserServiceImpl) Create(user request.CreateUserRequest) response.Response {
 	err := u.validate.Struct(user)
+
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusBadRequest,

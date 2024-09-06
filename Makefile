@@ -1,3 +1,5 @@
+.PHONY: dev build test build-image run-container
+
 dev:
 	@go run main.go
 build:

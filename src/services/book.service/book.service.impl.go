@@ -34,7 +34,13 @@ func (b *BookServiceImpl) Create(book request.CreateBookRequest) response.Respon
 		}
 	}
 
-	newBook := model.Book{}
+	newBook := model.Book{
+		Title:       book.Title,
+		ISBN:        book.ISBN,
+		Publication: book.Publication,
+		Author:      book.Author,
+		Genre:       book.Genre,
+	}
 
 	savedBk, err := b.BookRepo.Save(newBook)
 
@@ -50,8 +56,12 @@ func (b *BookServiceImpl) Create(book request.CreateBookRequest) response.Respon
 		Code:   http.StatusCreated,
 		Status: "success",
 		Data: response.BookResponse{
-			BookId: savedBk.BookId,
-			Title:  savedBk.Title,
+			BookId:      savedBk.BookId,
+			Title:       savedBk.Title,
+			ISBN:        savedBk.ISBN,
+			Publication: savedBk.Publication,
+			Author:      savedBk.Author,
+			Genre:       savedBk.Genre,
 		},
 	}
 }

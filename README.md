@@ -18,7 +18,7 @@ NOTE:
 Make sure you have postgres database running
 Run using postgres container using `docker`:
 ```sh
-docker run --name lms-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=test -p 5432:5432 -d postgres
+docker run --name lms-postgres -v ./init.sql:/docker-entrypoint-initdb.d/init.sql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=test -p 5432:5432 -d postgres
 ```
 
 
