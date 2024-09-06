@@ -115,6 +115,7 @@ func (u *UserServiceImpl) FindAll() response.Response {
 // FindById implements UserService.
 func (u *UserServiceImpl) FindById(UserId string) response.Response {
 	userData, err := u.UserRepo.FindById(UserId)
+
 	if err != nil {
 		return response.Response{
 			Code:   http.StatusNotFound,

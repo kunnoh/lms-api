@@ -101,7 +101,28 @@ func (b *BookServiceImpl) FindAll() response.Response {
 
 // FindById implements BookService.
 func (b *BookServiceImpl) FindById(BookId string) response.Response {
-	panic("unimplemented")
+	bookData, err := b.BookRepo.FindById(BookId)
+
+	if err != nil {
+		return response.Response{
+			Code:   http.StatusNotFound,
+			Status: "Error",
+			Error:  "Book not found",
+		}
+	}
+
+	return response.Response{
+		Code:   http.StatusOK,
+		Status: "success",
+		Data: response.BookResponse{
+			BookId:      bookData.BookId,
+			Title:       bookData.Title,
+			ISBN:        bookData.ISBN,
+			Publication: bookData.Publication,
+			Genre:       bookData.Genre,
+			Author:      bookData.Author,
+		},
+	}
 }
 
 // Update implements BookService.
