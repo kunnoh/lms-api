@@ -36,11 +36,6 @@ func DbConnection(c *Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to retrieve database object: %w", err)
 	}
 
-	err = sqlDB.Ping()
-	if err != nil {
-		return nil, fmt.Errorf("could not ping the database: %w", err)
-	}
-
 	// Set connection pool settings
 	sqlDB.SetMaxOpenConns(10)
 	sqlDB.SetMaxIdleConns(5)

@@ -59,7 +59,7 @@ func main() {
 	bookController := controller.NewBookController(bookService)
 
 	// routes
-	route := routes.NewRouter(userRepo, userController, bookController, authController)
+	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
 	PORT := confg.Port
 

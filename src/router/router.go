@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,9 +9,10 @@ import (
 	"github.com/kunnoh/lms-api/src/data/response"
 	"github.com/kunnoh/lms-api/src/middleware"
 	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
+	"gorm.io/gorm"
 )
 
-func NewRouter(usersRepo userrepository.UserRepository, userCtrl *controller.UserController, bookCtrl *controller.BookController, authCtrl *controller.AuthController) *gin.Engine {
+func NewRouter(usersRepo userrepository.UserRepository, userCtrl *controller.UserController, bookCtrl *controller.BookController, authCtrl *controller.AuthController, db *gorm.DB) *gin.Engine {
 	routes := gin.Default()
 
 	routes.Use(func(c *gin.Context) {
@@ -29,8 +31,37 @@ func NewRouter(usersRepo userrepository.UserRepository, userCtrl *controller.Use
 		ctx.JSON(http.StatusOK, struct{ Message string }{Message: "Welcome to LMS-API"})
 	})
 
-	routes.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, struct{ Status string }{Status: "Healthy"})
+	// Liveness probe
+	routes.GET("/healthz", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "alive",
+		})
+	})
+
+	// Readiness probe
+	routes.GET("/readiness", func(ctx *gin.Context) {
+		sqlDB, err := db.DB()
+		if err != nil {
+			log.Println("Failed to retrieve database object:", err)
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"status": "database_error",
+				"error":  "Failed to retrieve database object",
+			})
+			return
+		}
+
+		err = sqlDB.Ping()
+		if err != nil {
+			log.Println("Database is not ready:", err)
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"status": "database_error",
+				"error":  "Database is not ready",
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "ready",
+		})
 	})
 
 	authRouter := routes.Group("/auth")
