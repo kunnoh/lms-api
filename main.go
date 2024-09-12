@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	logg "log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
@@ -21,7 +26,7 @@ import (
 )
 
 func main() {
-	log.Info().Msg("started server")
+	log.Info().Msg("Started server")
 
 	// load environment vars
 	confg, c_err := config.LoadConfig(".")
@@ -64,10 +69,37 @@ func main() {
 	PORT := confg.Port
 
 	server := &http.Server{
-		Addr:    ":" + strconv.Itoa(PORT),
-		Handler: route,
+		Addr:         ":" + strconv.Itoa(PORT),
+		Handler:      route,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
-	err := server.ListenAndServe()
-	utils.ErrorPanic(err)
+	// listen for os signal
+	stopCh := make(chan os.Signal, 1)
+	signal.Notify(stopCh, os.Interrupt, syscall.SIGTERM)
+
+	// Run server in a goroutine so it doesn't block
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logg.Fatalf("Could not listen on port %d: %v\n", PORT, err)
+		}
+	}()
+	log.Info().Msgf("Server running on port: %d", PORT)
+
+	// block until a signal
+	<-stopCh
+	log.Info().Msg("Shutting down server...")
+
+	// Create a deadline for the server shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Gracefully shutdown the server
+	if err := server.Shutdown(ctx); err != nil {
+		logg.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	log.Info().Msg("Server exiting!!")
 }

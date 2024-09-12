@@ -39,7 +39,7 @@ func DbConnection(c *Config) (*gorm.DB, error) {
 	// Set connection pool settings
 	sqlDB.SetMaxOpenConns(10)
 	sqlDB.SetMaxIdleConns(5)
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
 	log.Println("Database connection established successfully")
 
