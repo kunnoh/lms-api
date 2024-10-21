@@ -1,39 +1,23 @@
 # Library Management System
-
-## Clone repo
-
+## Run `lms-api`
+Clone repo.
 ```sh
 git clone https://github.com/kunnoh/lms-api.git
 ```
 
-goto directory
+Go to directory.
 ```sh
 cd lms-api
 ```
-## Run app
-Change `example.env` to `.env` at the root folder of project
-Set the information in `.env`
-
-NOTE:
-Make sure you have postgres database running
-Run using postgres container using `docker`:
-```sh
-docker run --name lms-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=test -p 5432:5432 -d postgres
-```
 
 
-**development mode**
-```sh
-make dev
-```
 
-**Build app**
-```sh
-make build
-```
+**Configuration**  
+Change `example.env` to `.env` at the root folder of project.
+Set the information in `.env`.
 
-### Genarate ECDSA keys
-Create private key
+Genarate ECDSA keys used to generate `jwt` token. Save them in `./keys` folder.
+Create private key.
 ```sh
 openssl ecparam -genkey -name prime256v1 -noout -out ecdsa_private_key.pem
 ```
@@ -41,6 +25,53 @@ openssl ecparam -genkey -name prime256v1 -noout -out ecdsa_private_key.pem
 Generate public key
 ```sh
 openssl ec -in ecdsa_private_key.pem -pubout -out ecdsa_public_key.pem
+```
+  
+
+NOTE:  
+Make sure you have postgres database running.  
+Run using postgres container using `docker`:
+```sh
+docker run --name lms-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=test -p 5432:5432 -d postgres
+```
+  
+  
+## Build
+
+Build app.  
+```sh
+make build
+```
+  
+or
+
+```sh
+go build -o ./bin/
+```
+
+  
+Create `docker` image.  
+```sh
+make build-image
+```
+
+or
+
+
+```sh
+docker build -t lms-api:latest .
+```
+
+
+**Start app**
+```sh
+make dev
+```
+
+or
+
+```sh
+docker run --name lms-app -p 7755:7755 lms-api:latest
 ```
 
 
