@@ -69,7 +69,7 @@ func main() {
 	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
 	server := &http.Server{
-		Addr:         ":" + PORT,
+		Addr:         PORT,
 		Handler:      route,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 20 * time.Second,
