@@ -7,11 +7,11 @@ metadata:
     tier: env
 data:
   DB_HOST: lms-db-service
-  DB_PORT: :5432
+  DB_PORT: "5432"
   DB_USER: postgres
   DB_PASSWORD: postgres
   DB_NAME: test
-  PORT: :7755
+  PORT: "7755"
   TOKEN_EXPIRY: 10m
   REFRESH_TOKEN_EXPIRY: 24h
   TOKEN_MAXAGE: 12h
