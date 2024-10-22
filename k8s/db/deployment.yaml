@@ -6,23 +6,25 @@ metadata:
     app: lms-db-deployment
     tier: db
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: lms-api-db
+      tier: db
   template:
     metadata:
       labels:
         app: lms-api-db
+        tier: db
     spec:
       containers:
-        - name: postgres-lms
+        - name: lms-postgres-container
           image: postgres:17-alpine
           imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "200m"
           ports:
             - containerPort: 5432
           volumeMounts:

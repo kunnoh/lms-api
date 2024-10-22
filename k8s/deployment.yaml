@@ -6,7 +6,7 @@ metadata:
     app: lms-api-deployment
     tier: backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: lms-api-app
@@ -27,10 +27,10 @@ spec:
         resources:
           requests:
             memory: "128Mi"
-            cpu: "250m"
+            cpu: "100m"
           limits:
             memory: "256Mi"
-            cpu: "500m"
+            cpu: "300m"
 
         envFrom:
         - configMapRef:
