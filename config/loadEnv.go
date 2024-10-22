@@ -23,18 +23,16 @@ type Config struct {
 // LoadConfig retrieves configuration from environment variables
 func LoadConfig() (config Config, err error) {
 	config.DBHost = os.Getenv("DB_HOST")
-	// config.DBPort = os.Getenv("DB_PORT")
 	config.DBUsername = os.Getenv("DB_USER")
 	config.DBPassword = os.Getenv("DB_PASSWORD")
 	config.DBName = os.Getenv("DB_NAME")
-	// config.Port = os.Getenv("PORT")
 	config.TokenAge = os.Getenv("TOKEN_MAXAGE")
 	config.TokenSecret = os.Getenv("TOKEN_SECRET")
 
 	// Get the application port from the environment variable
 	dbport, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
-		return config, fmt.Errorf("unable to parse PORT: %w", err)
+		return config, fmt.Errorf("unable to parse DB_PORT: %w", err)
 	}
 	config.DBPort = dbport
 

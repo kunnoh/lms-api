@@ -6,8 +6,9 @@ metadata:
   labels:
     app: lms-postgres-service
 spec:
+  type: ClusterIP
   selector:
-    app: lms-db-deploy
+    app: lms-api-db
   ports:
-  - port: 5432
-  clusterIP: None
+    - port: 9911
+      targetPort: 5432
