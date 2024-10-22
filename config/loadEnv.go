@@ -25,8 +25,8 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigType("env")
 	viper.SetConfigName(".env")
 
-	viper.SetDefault("PORT", 4055)
-	viper.SetDefault("TOKEN_MAXAGE", 3600)
+	// viper.SetDefault("PORT", 4055)
+	// viper.SetDefault("TOKEN_MAXAGE", 3600)
 
 	viper.AutomaticEnv()
 

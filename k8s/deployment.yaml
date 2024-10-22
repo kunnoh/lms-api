@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lms-api
+  name: lms-api-deploy
   labels:
-    app: lms-api-deploy
+    app: lms-api-deployment
     tier: backend
 spec:
   replicas: 2
@@ -20,19 +20,18 @@ spec:
       containers:
       - name: lms-api-container
         image: kunohdere/lms-api:latest
-        
+
         ports: 
         - containerPort: 7755
 
         resources:
           requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
             memory: "256Mi"
             cpu: "500m"
-          limits:
-            memory: "512Mi"
-            cpu: "1"
 
         envFrom:
         - configMapRef:
             name: lms-api-config
-            
