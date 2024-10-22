@@ -10,7 +10,7 @@ import (
 )
 
 func DbConnection(c *Config) (*gorm.DB, error) {
-	dbUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", c.DBHost, c.DBPort, c.DBUsername, c.DBPassword, c.DBName)
+	dbUrl := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", c.DBHost, c.DBPort, c.DBUsername, c.DBPassword, c.DBName)
 
 	var db *gorm.DB
 	var err error

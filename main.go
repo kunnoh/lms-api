@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -69,7 +70,7 @@ func main() {
 	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
 	server := &http.Server{
-		Addr:         ":" + PORT,
+		Addr:         ":" + strconv.Itoa(PORT),
 		Handler:      route,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 20 * time.Second,
