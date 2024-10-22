@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
@@ -35,7 +34,7 @@ func main() {
 	}
 
 	PORT := confg.Port
-	log.Info().Msgf("Server running on port: %d", PORT)
+	log.Info().Msgf("Server running on port: %v", PORT)
 
 	// Connect DB
 	db, db_err := config.DbConnection(&confg)
@@ -70,7 +69,7 @@ func main() {
 	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
 	server := &http.Server{
-		Addr:         ":" + strconv.Itoa(PORT),
+		Addr:         ":" + PORT,
 		Handler:      route,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 20 * time.Second,
@@ -84,7 +83,7 @@ func main() {
 	// Run server in a goroutine so it doesn't block
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logg.Fatalf("Could not listen on port %d: %v\n", PORT, err)
+			logg.Fatalf("Could not listen on port %v: %v\n", PORT, err)
 		}
 	}()
 

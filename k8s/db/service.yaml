@@ -6,7 +6,6 @@ metadata:
   labels:
     app: lms-postgres-service
 spec:
-  type: NodePort
   selector:
     app: lms-db-deploy
   ports:

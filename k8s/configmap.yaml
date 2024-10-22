@@ -6,7 +6,7 @@ metadata:
     name: lms-api-config
     tier: env
 data:
-  DB_HOST: lms-db-deploy
+  DB_HOST: lms-db-service
   DB_PORT: :5432
   DB_USER: postgres
   DB_PASSWORD: postgres
