@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -16,7 +15,7 @@ type Config struct {
 	Port                  string
 	RefreshTokenExpiresIn time.Duration
 	TokenExpiresIn        time.Duration
-	TokenAge              int
+	TokenAge              string
 	TokenSecret           string
 }
 
@@ -28,6 +27,8 @@ func LoadConfig() (config Config, err error) {
 	config.DBPassword = os.Getenv("DB_PASSWORD")
 	config.DBName = os.Getenv("DB_NAME")
 	config.Port = os.Getenv("PORT")
+	config.TokenAge = os.Getenv("TOKEN_MAXAGE")
+	config.TokenSecret = os.Getenv("TOKEN_SECRET")
 
 	// Get the refresh token expiry from the environment variable
 	refreshTokenExpiry, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRY"))
@@ -42,15 +43,6 @@ func LoadConfig() (config Config, err error) {
 		return config, fmt.Errorf("unable to parse TOKEN_EXPIRY: %w", err)
 	}
 	config.TokenExpiresIn = tokenExpiry
-
-	// Get the maximum token age from the environment variable
-	tokenAge, err := strconv.Atoi(os.Getenv("TOKEN_MAXAGE"))
-	if err != nil {
-		return config, fmt.Errorf("unable to parse TOKEN_MAXAGE: %w", err)
-	}
-	config.TokenAge = tokenAge
-
-	config.TokenSecret = os.Getenv("TOKEN_SECRET")
 
 	return config, nil
 }
