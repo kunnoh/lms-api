@@ -29,7 +29,7 @@ func main() {
 	log.Info().Msg("Started server")
 
 	// load environment vars
-	confg, c_err := config.LoadConfig(".")
+	confg, c_err := config.LoadConfig()
 	if c_err != nil {
 		utils.ErrorPanic(c_err)
 	}

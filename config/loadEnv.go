@@ -2,43 +2,61 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"time"
-
-	"github.com/spf13/viper"
 )
 
 type Config struct {
-	DBHost                string        `mapstructure:"DB_HOST"`
-	DBPort                string        `mapstructure:"DB_PORT"`
-	DBUsername            string        `mapstructure:"DB_USER"`
-	DBPassword            string        `mapstructure:"DB_PASSWORD"`
-	DBName                string        `mapstructure:"DB_NAME"`
-	Port                  int           `mapstructure:"PORT"`
-	RefreshTokenExpiresIn time.Duration `mapstructure:"TOKEN_EXPIRY"`
-	TokenExpiresIn        time.Duration `mapstructure:"TOKEN_EXPIRY"`
-	TokenAge              int           `mapstructure:"TOKEN_MAXAGE"`
-	TokenSecret           string        `mapstructure:"TOKEN_SECRET"`
+	DBHost                string        // Database host
+	DBPort                string        // Database port
+	DBUsername            string        // Database username
+	DBPassword            string        // Database password
+	DBName                string        // Database name
+	Port                  int           // Application port
+	RefreshTokenExpiresIn time.Duration // Refresh token expiry duration
+	TokenExpiresIn        time.Duration // Token expiry duration
+	TokenAge              int           // Maximum age of token
+	TokenSecret           string        // Token secret
 }
 
-func LoadConfig(path string) (config Config, err error) {
-	viper.AddConfigPath(path)
-	viper.SetConfigType("env")
-	viper.SetConfigName(".env")
+// LoadConfig retrieves configuration from environment variables
+func LoadConfig() (config Config, err error) {
+	config.DBHost = os.Getenv("DB_HOST")
+	config.DBPort = os.Getenv("DB_PORT")
+	config.DBUsername = os.Getenv("DB_USER")
+	config.DBPassword = os.Getenv("DB_PASSWORD")
+	config.DBName = os.Getenv("DB_NAME")
 
-	// viper.SetDefault("PORT", 4055)
-	// viper.SetDefault("TOKEN_MAXAGE", 3600)
-
-	viper.AutomaticEnv()
-
-	err = viper.ReadInConfig()
+	// Get the application port from the environment variable
+	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
-		fmt.Printf("Warning: No config file found. Relying on environment variables.\n")
+		return config, fmt.Errorf("unable to parse PORT: %w", err)
 	}
+	config.Port = port
 
-	err = viper.Unmarshal(&config)
+	// Get the refresh token expiry from the environment variable
+	refreshTokenExpiry, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRY"))
 	if err != nil {
-		return config, fmt.Errorf("unable to decode into struct, %w", err)
+		return config, fmt.Errorf("unable to parse TOKEN_EXPIRY: %w", err)
 	}
+	config.RefreshTokenExpiresIn = refreshTokenExpiry
+
+	// Get the token expiry from the environment variable
+	tokenExpiry, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRY"))
+	if err != nil {
+		return config, fmt.Errorf("unable to parse TOKEN_EXPIRY: %w", err)
+	}
+	config.TokenExpiresIn = tokenExpiry
+
+	// Get the maximum token age from the environment variable
+	tokenAge, err := strconv.Atoi(os.Getenv("TOKEN_MAXAGE"))
+	if err != nil {
+		return config, fmt.Errorf("unable to parse TOKEN_MAXAGE: %w", err)
+	}
+	config.TokenAge = tokenAge
+
+	config.TokenSecret = os.Getenv("TOKEN_SECRET")
 
 	return config, nil
 }

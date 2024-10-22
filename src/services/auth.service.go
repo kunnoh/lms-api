@@ -60,7 +60,7 @@ func (a *AuthServiceImpl) Login(user request.LoginRequest) response.Response {
 		}
 	}
 
-	config, _ := config.LoadConfig(".")
+	config, _ := config.LoadConfig()
 
 	// generate token
 	token, err_tok := utils.GenerateToken(config.TokenExpiresIn, u.UserId)
