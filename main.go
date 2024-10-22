@@ -34,6 +34,9 @@ func main() {
 		utils.ErrorPanic(c_err)
 	}
 
+	PORT := confg.Port
+	log.Info().Msgf("Server running on port: %d", PORT)
+
 	// Connect DB
 	db, db_err := config.DbConnection(&confg)
 	if db_err != nil {
@@ -66,8 +69,6 @@ func main() {
 	// routes
 	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
-	PORT := confg.Port
-
 	server := &http.Server{
 		Addr:         ":" + strconv.Itoa(PORT),
 		Handler:      route,
@@ -86,7 +87,6 @@ func main() {
 			logg.Fatalf("Could not listen on port %d: %v\n", PORT, err)
 		}
 	}()
-	log.Info().Msgf("Server running on port: %d", PORT)
 
 	// block until a signal
 	<-stopCh
