@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spf13/viper"
@@ -24,13 +25,20 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigType("env")
 	viper.SetConfigName(".env")
 
+	viper.SetDefault("PORT", 4055)
+	viper.SetDefault("TOKEN_MAXAGE", 3600)
+
 	viper.AutomaticEnv()
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		return
+		fmt.Printf("Warning: No config file found. Relying on environment variables.\n")
 	}
 
 	err = viper.Unmarshal(&config)
-	return
+	if err != nil {
+		return config, fmt.Errorf("unable to decode into struct, %w", err)
+	}
+
+	return config, nil
 }

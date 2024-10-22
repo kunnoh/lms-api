@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms-api
+  labels:
+    app: lms-api-deploy
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lms-api-app
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: lms-api-app
+        tier: backend
+    spec:
+      containers:
+      - name: lms-api-container
+        image: kunohdere/lms-api:latest
+        
+        ports: 
+        - containerPort: 7755
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+
+        envFrom:
+        - configMapRef:
+            name: lms-api-config
+            

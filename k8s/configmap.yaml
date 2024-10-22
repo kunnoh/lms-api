@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lms-api-config
+  labels:
+    name: lms-api-config
+    tier: env
+data:
+  DB_HOST: "127.0.0.1"
+  DB_PORT: "5432"
+  DB_USER: "postgres"
+  DB_PASSWORD: "postgres"
+  DB_NAME: "test"
+  PORT: "7755"
+  TOKEN_EXPIRY: "10m"
+  REFRESH_TOKEN_EXPIRY: "24h"
+  TOKEN_MAXAGE: "12"
