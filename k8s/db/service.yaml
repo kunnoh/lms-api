@@ -7,7 +7,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: lms-api-db
+    app: lms-db
   ports:
     - port: 9911
       targetPort: 5432

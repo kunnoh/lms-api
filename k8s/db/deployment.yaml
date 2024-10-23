@@ -9,12 +9,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lms-api-db
+      app: lms-db
       tier: db
   template:
     metadata:
       labels:
-        app: lms-api-db
+        app: lms-db
         tier: db
     spec:
       containers:

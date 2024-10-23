@@ -32,14 +32,14 @@ func NewRouter(usersRepo userrepository.UserRepository, userCtrl *controller.Use
 	})
 
 	// Liveness probe
-	routes.GET("/healthz", func(ctx *gin.Context) {
+	routes.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": "alive",
 		})
 	})
 
 	// Readiness probe
-	routes.GET("/readiness", func(ctx *gin.Context) {
+	routes.GET("/ready", func(ctx *gin.Context) {
 		sqlDB, err := db.DB()
 		if err != nil {
 			log.Println("Failed to retrieve database object:", err)
