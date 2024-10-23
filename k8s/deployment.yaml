@@ -6,7 +6,7 @@ metadata:
     app: lms-api-deployment
     tier: backend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: lms-api-app
@@ -22,7 +22,7 @@ spec:
         image: kunohdere/lms-api:latest
 
         ports: 
-        - containerPort: 7755
+        - containerPort: 5521
 
         resources:
           requests:
@@ -39,13 +39,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 7755
-          initialDelaySeconds: 10
+            port: 5521
+          initialDelaySeconds: 5
           periodSeconds: 10
 
         readinessProbe:
           httpGet:
             path: /ready
-            port: 7755
+            port: 5521
           initialDelaySeconds: 5
           periodSeconds: 5
