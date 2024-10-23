@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: lms-api-service
+  namaspace: lms
   labels:
     app: lms-api-app-service
 spec:

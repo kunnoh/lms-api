@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lms-db-deploy
+  namaspace: lms
   labels:
     app: lms-db-deployment
     tier: db

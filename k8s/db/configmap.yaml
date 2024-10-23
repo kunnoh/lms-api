@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: lms-dbconfig
+  namaspace: lms
   labels:
     name: lms-api-dbconfig
     tier: env

@@ -75,3 +75,22 @@ docker run --name lms-app -p 7755:7755 lms-api:latest
 ```
 
 
+## Testing
+Register.  
+```sh
+curl -X POST http://192.168.39.2:30001/auth/register -H "Content-Type: application/json" -d '{
+  "Email": "example@example.com", 
+  "Name": "John Doe",
+  "Password": "securepassword123",
+  "Phone": "+1234567890",
+  "IdNumber": "ID12345678"
+}'
+```
+
+Login.  
+```sh
+curl -X POST http://192.168.39.2:30001/auth/login -H "Content-Type: application/json" -d '{
+  "Email": "example@example.com",
+  "Password": "securepassword123"
+}'
+```

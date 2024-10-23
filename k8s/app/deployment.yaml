@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lms-api-deploy
+  namaspace: lms
   labels:
     app: lms-api-deployment
     tier: backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: lms-api-app
