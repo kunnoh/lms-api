@@ -5,10 +5,16 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"os"
 )
 
 func loadPrivateKey(filename string) (*ecdsa.PrivateKey, error) {
+	// Check if the file exists
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		return nil, fmt.Errorf("file %s does not exist", filename)
+	}
+
 	// load private key
 	privateKeyPEM, err := os.ReadFile(filename)
 	if err != nil {
@@ -31,6 +37,11 @@ func loadPrivateKey(filename string) (*ecdsa.PrivateKey, error) {
 }
 
 func loadPublicKey(filename string) (*ecdsa.PublicKey, error) {
+	// Check if the file exists
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		return nil, fmt.Errorf("file %s does not exist", filename)
+	}
+	
 	// Read the public key file
 	publicKeyPEM, err := os.ReadFile(filename)
 	if err != nil {
