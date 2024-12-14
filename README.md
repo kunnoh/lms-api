@@ -55,28 +55,17 @@ make dev
 
 ## Build
 
+**Build executable**
 Build app.
 
 ```sh
 make build
 ```
 
-or
-
-```sh
-go build -o ./bin/
-```
-
-Create `docker` image.
+**Build docker image**
 
 ```sh
 make build-image
-```
-
-or
-
-```sh
-docker build -t lms-api:latest .
 ```
 
 ## Testing
