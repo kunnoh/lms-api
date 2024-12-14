@@ -1,11 +1,13 @@
-.PHONY: dev build test build-image run-container
+.PHONY: dev build test build-image run-container start-db
 
 dev:
 	@go run main.go
+
 build:
 	@go build -o ./bin/
+
 test:
-	@go -c tests -v
+	@go test -v ./tests
 
 build-image:
 	docker build -t lms-api:latest .

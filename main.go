@@ -26,16 +26,14 @@ import (
 )
 
 func main() {
-	log.Info().Msg("Started server")
+	log.Info().Msg("initializing...")
 
 	// load environment vars
 	confg, c_err := config.LoadConfig()
 	if c_err != nil {
+		log.Printf("%s", c_err.Error())
 		utils.ErrorPanic(c_err)
 	}
-
-	PORT := confg.Port
-	log.Info().Msgf("Server running on port: %v", PORT)
 
 	// Connect DB
 	db, db_err := config.DbConnection(&confg)
@@ -70,7 +68,7 @@ func main() {
 	route := routes.NewRouter(userRepo, userController, bookController, authController, db)
 
 	server := &http.Server{
-		Addr:         ":" + strconv.Itoa(PORT),
+		Addr:         ":" + strconv.Itoa(confg.Port),
 		Handler:      route,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 20 * time.Second,
@@ -84,7 +82,7 @@ func main() {
 	// Run server in a goroutine so it doesn't block
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logg.Fatalf("Could not listen on port %v: %v\n", PORT, err)
+			logg.Fatalf("Could not listen on port %v: %v\n", confg.Port, err)
 		}
 	}()
 

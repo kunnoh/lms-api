@@ -27,30 +27,35 @@ func LoadConfig() (config Config, err error) {
 	config.DBPassword = os.Getenv("DB_PASSWORD")
 	config.DBName = os.Getenv("DB_NAME")
 	config.TokenAge = os.Getenv("TOKEN_MAXAGE")
-	config.TokenSecret = os.Getenv("TOKEN_SECRET")
 
-	// Get the application port from the environment variable
+	// Check if all required environment variables are set
+	
+	// if config.DBHost == "" || config.DBUsername == "" || config.DBPassword == "" || config.DBName == "" || config.TokenSecret == "" {
+	// 	return config, fmt.Errorf("required environment variables are missing")
+	// }
+
+	// db port
 	dbport, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
 		return config, fmt.Errorf("unable to parse DB_PORT: %w", err)
 	}
 	config.DBPort = dbport
 
-	// Get the application port from the environment variable
+	// app port
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
 		return config, fmt.Errorf("unable to parse PORT: %w", err)
 	}
 	config.Port = port
 
-	// Get the refresh token expiry from the environment variable
-	refreshTokenExpiry, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRY"))
+	//refresh token expiry
+	refreshTokenExpiry, err := time.ParseDuration(os.Getenv("REFRESH_TOKEN_EXPIRY"))
 	if err != nil {
-		return config, fmt.Errorf("unable to parse TOKEN_EXPIRY: %w", err)
+		return config, fmt.Errorf("unable to parse REFRESH_TOKEN_EXPIRY: %w", err)
 	}
 	config.RefreshTokenExpiresIn = refreshTokenExpiry
 
-	// Get the token expiry from the environment variable
+	// token expiry
 	tokenExpiry, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRY"))
 	if err != nil {
 		return config, fmt.Errorf("unable to parse TOKEN_EXPIRY: %w", err)
