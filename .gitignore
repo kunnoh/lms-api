@@ -26,5 +26,5 @@ bin
 .env
 .vscode
 
-./keys/
-./bin
+keys/*
+bin
