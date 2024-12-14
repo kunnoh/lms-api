@@ -21,28 +21,28 @@ Set the information in `.env`.
 Export variables to environment from `.env` file.
 
 ```sh
-export $(cat .env | xargs)
+. env.sh
 ```
 
 Genarate ECDSA keys used to generate `jwt` token. Save them in `./keys` folder.
 Create private key.
 
 ```sh
-openssl ecparam -genkey -name prime256v1 -noout -out ecdsa_private_key.pem
+openssl ecparam -genkey -name prime256v1 -noout -out ./keys/ecdsa_private_key.pem
 ```
 
 Generate public key
 
 ```sh
-openssl ec -in ecdsa_private_key.pem -pubout -out ecdsa_public_key.pem
+openssl ec -in ecdsa_private_key.pem -pubout -out ./keys/ecdsa_public_key.pem
 ```
 
 NOTE:  
 Make sure you have postgres database running.  
-Run using postgres container using `docker`:
+Run `postgres` container using `docker`:
 
 ```sh
-docker run --name lms-postgres --env-file .env -p 5432:5432 -d postgres
+make start-db
 ```
 
 **Start app**
@@ -51,11 +51,7 @@ docker run --name lms-postgres --env-file .env -p 5432:5432 -d postgres
 make dev
 ```
 
-or
-
-```sh
-docker run --name lms-app -p 7755:7755 lms-api:latest
-```
+## Run tests
 
 ## Build
 
