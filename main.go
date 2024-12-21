@@ -19,7 +19,7 @@ import (
 	bookrepository "github.com/kunnoh/lms-api/src/repository/book.repository"
 	userrepository "github.com/kunnoh/lms-api/src/repository/user.repository"
 	routes "github.com/kunnoh/lms-api/src/router"
-	"github.com/kunnoh/lms-api/src/services"
+	authservice "github.com/kunnoh/lms-api/src/services/auth.service"
 	bookservice "github.com/kunnoh/lms-api/src/services/book.service"
 	userservice "github.com/kunnoh/lms-api/src/services/user.service"
 	"github.com/kunnoh/lms-api/src/utils"
@@ -57,7 +57,7 @@ func main() {
 	validate := validator.New()
 	userService := userservice.NewUserServiceImpl(userRepo, validate)
 	bookService := bookservice.NewBookServiceImpl(bookRepo, validate)
-	authService := services.NewAuthServiceImpl(userRepo, validate)
+	authService := authservice.NewAuthServiceImpl(userRepo, validate)
 
 	// controller
 	authController := controller.NewAuthController(authService)

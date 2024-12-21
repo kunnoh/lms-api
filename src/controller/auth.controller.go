@@ -6,14 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kunnoh/lms-api/src/data/request"
 	"github.com/kunnoh/lms-api/src/data/response"
-	"github.com/kunnoh/lms-api/src/services"
+	authservice "github.com/kunnoh/lms-api/src/services/auth.service"
 )
 
 type AuthController struct {
-	authService services.AuthService
+	authService authservice.AuthService
 }
 
-func NewAuthController(service services.AuthService) *AuthController {
+func NewAuthController(service authservice.AuthService) *AuthController {
 	return &AuthController{authService: service}
 }
 
