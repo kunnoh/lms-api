@@ -63,16 +63,32 @@ run_container() {
 
 # Function to start the PostgreSQL container
 start_db() {
-  # DB_CONTAINER_NAME="lms-postgres"
-  # if [ "$(docker ps -a -f name=$DB_CONTAINER_NAME)" ]; then
-  #   echo -e "${GREEN}$DB_CONTAINER_NAME container is already running.${NC}"
-  #   docker rm "${DB_CONTAINER_NAME}"
-  # else
-    echo -e "${GREEN}Starting a new PostgreSQL container...${NC}"
+  if docker inspect "$DB_CONTAINER_NAME" > /dev/null 2>&1; then
+    echo -e "${GREEN}The container $DB_CONTAINER_NAME exists.${NC}"
+
+    if $(docker inspect -f '{{.State.Status}}' "${DB_CONTAIRE_NAME}" | grep -q "running"); then
+      echo -e "${GREEN}$DB_CONTAINER_NAME container is already running.${NC}"
+    else
+      echo -e "${GREEN}$DB_CONTAINER_NAME container is not running.${NC}"
+      echo -e "${GREEN}Restarting $DB_CONTAINER_NAME container.${NC}"
+      docker start lms-postgres
+    fi
+  else
+    echo -e "${GREEN}Starting new container..."
     docker run --name "${DB_CONTAINER_NAME}" \
       --env-file .env \
       -p "5432:5432" \
       -d postgres:17-alpine
+  fi
+  # if [ "$(docker ps -f name=$DB_CONTAINER_NAME)" ]; then
+  #   echo -e "${GREEN}$DB_CONTAINER_NAME container is already running.${NC}"
+  #   docker rm "${DB_CONTAINER_NAME}"
+  # else
+  #   echo -e "${GREEN}Starting a new PostgreSQL container...${NC}"
+  #   docker run --name "${DB_CONTAINER_NAME}" \
+  #     --env-file .env \
+  #     -p "5432:5432" \
+  #     -d postgres:17-alpine
   # fi
 
   # if [ ! "$(docker ps -a -q -f name=$DB_CONTAINER_NAME)" ]; then

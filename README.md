@@ -34,7 +34,7 @@ openssl ecparam -genkey -name prime256v1 -noout -out ./keys/ecdsa_private_key.pe
 Generate public key
 
 ```sh
-openssl ec -in ecdsa_private_key.pem -pubout -out ./keys/ecdsa_public_key.pem
+openssl ec -in ./keys/ecdsa_private_key.pem -pubout -out ./keys/ecdsa_public_key.pem
 ```
 
 NOTE:  
