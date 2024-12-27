@@ -18,6 +18,8 @@ type Config struct {
 	TokenExpiresIn        time.Duration
 	TokenAge              string
 	TokenSecret           string
+	PrivKey               string
+	PubKey                string
 }
 
 // LoadConfig retrieves configuration from environment variables
@@ -27,9 +29,11 @@ func LoadConfig() (config Config, err error) {
 	config.DBPassword = os.Getenv("DB_PASSWORD")
 	config.DBName = os.Getenv("DB_NAME")
 	config.TokenAge = os.Getenv("TOKEN_MAXAGE")
+	config.PrivKey = os.Getenv("PRIV_KEY")
+	config.PubKey = os.Getenv("PUB_KEY")
 
 	// Check if all required environment variables are set
-	
+
 	// if config.DBHost == "" || config.DBUsername == "" || config.DBPassword == "" || config.DBName == "" || config.TokenSecret == "" {
 	// 	return config, fmt.Errorf("required environment variables are missing")
 	// }
