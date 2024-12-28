@@ -9,17 +9,8 @@ import (
 )
 
 func loadPrivateKey() (*ecdsa.PrivateKey, error) {
-	// Check if the file exists
-	// if _, err := os.Stat(filename); os.IsNotExist(err) {
-	// 	return nil, fmt.Errorf("file %s does not exist", filename)
-	// }
-
 	// load private key
 	PrivKey := os.Getenv("PRIV_KEY")
-	// privateKeyPEM, err := os.ReadFile(filename)
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	// Decode the PEM block
 	block, _ := pem.Decode([]byte(PrivKey))
@@ -39,15 +30,6 @@ func loadPrivateKey() (*ecdsa.PrivateKey, error) {
 func loadPublicKey() (*ecdsa.PublicKey, error) {
 	// Check if the file exists
 	PubKey := os.Getenv("PUB_KEY")
-	// if _, err := os.Stat(filename); os.IsNotExist(err) {
-	// 	return nil, fmt.Errorf("file %s does not exist", filename)
-	// }
-
-	// Read the public key file
-	// publicKeyPEM, err := os.ReadFile(filename)
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	// Decode the PEM block
 	block, _ := pem.Decode([]byte(PubKey))
