@@ -23,7 +23,7 @@ go.work.sum
 
 bin
 
-.env
+./.env
 .vscode
 
 keys/*

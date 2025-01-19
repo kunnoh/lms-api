@@ -22,7 +22,7 @@ dev() {
 }
 
 # Function to build the Go binary
-build() {
+build_app() {
   echo -e "${GREEN}Building Go binary...${NC}"
   mkdir -p ./bin
   go build -o ./bin/
@@ -130,7 +130,7 @@ help_menu() {
   echo -e "${GREEN}Usage: ./run.sh [command]${NC}"
   echo "Commands:"
   echo "  dev                  Run the application locally"
-  echo "  build                Build the Go binary"
+  echo "  build-app            Build the Go binary"
   echo "  test                 Run tests"
   echo "  build-image          Build the Docker image"
   echo "  run-app-container    Run the LMS API container"
@@ -142,7 +142,7 @@ help_menu() {
 # Main script logic
 case "$1" in
   dev) dev ;;
-  build) build ;;
+  build-app) build_app ;;
   test) test ;;
   build-image) build_image ;;
   run-container) run_container ;;
