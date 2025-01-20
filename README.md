@@ -1,38 +1,39 @@
 # Library Management System
 
-## Run `lms-api`
 
-Clone repo.
-
+Clone `lms-api` repository.
 ```sh
 git clone https://github.com/kunnoh/lms-api.git
 ```
 
-Go to directory.
-
+Go to directory. And run `./run.sh help` to see available options.
 ```sh
 cd lms-api
 ```
+```sh
+./run.sh
+```
 
-**Configuration**  
+## Configuration  
 Change `example.env` to `.env` at the root folder of project.
 Set the information in `.env`.
 
-Export variables to environment from `.env` file.
+Export variables to environment from `.env` file to the current terminal session.
 
 ```sh
-. env.sh
+./env.sh
 ```
 
-Genarate ECDSA keys used to generate `jwt` token. Save them in `./keys` folder.
-Create private key.
 
+## JWT key generation
+Genarate ECDSA keys used to generate `jwt` token. Save them in `./keys` folder.
+
+1. Create private key.
 ```sh
 openssl ecparam -genkey -name prime256v1 -noout -out ./keys/ecdsa_private_key.pem
 ```
 
-Generate public key
-
+2. Generate public key
 ```sh
 openssl ec -in ./keys/ecdsa_private_key.pem -pubout -out ./keys/ecdsa_public_key.pem
 ```
@@ -42,33 +43,35 @@ Make sure you have postgres database running.
 Run `postgres` container using `docker`:
 
 ```sh
-make start-db
+./run.sh start-db
 ```
 
 **Start app**
-
+Run the app for development.
 ```sh
-make dev
+./run.sh dev
 ```
 
 ## Run tests
+```sh
+./run.sh test
+```
 
 ## Build
 
 **Build executable**
 Build app.
-
 ```sh
-make build
+./run.sh build-app
 ```
 
 **Build docker image**
 
 ```sh
-make build-image
+./run.sh build-image
 ```
 
-## Testing
+## API testing
 
 Register.
 
