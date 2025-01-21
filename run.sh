@@ -14,6 +14,14 @@ RED="\033[0;31m"
 BROWN="\033[38;5;94m"
 NC="\033[0m" # No color
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+  source .env
+else
+  echo -e "${RED}.env file not found. Ensure it exists in the script's directory.${NC}"
+  exit 1
+fi
+
 # Function to run the app locally
 dev() {
   echo -e "${GREEN}Running application locally...${NC}"
@@ -41,7 +49,7 @@ test() {
 build_app_image() {
   echo ""
   echo -e "${GREEN}Building Docker image...${NC}"
-  docker build -t "${IMAGE_NAME}" .
+  docker build --no-cache -t "${IMAGE_NAME}" .
 }
 
 # Function to run the LMS API container
@@ -57,6 +65,8 @@ run_app() {
     -e TOKEN_EXPIRY="${TOKEN_EXPIRY}" \
     -e REFRESH_TOKEN_EXPIRY="${REFRESH_TOKEN_EXPIRY}" \
     -e TOKEN_MAXAGE="${TOKEN_MAXAGE}" \
+    -e PRIV_KEY="$(base64 keys/ecdsa_private_key.pem)" \
+    -e PUB_KEY="$(base64 keys/ecdsa_public_key.pem)" \
     -p "${PORT}:${PORT}" \
     --network lms-network \
     "${IMAGE_NAME}"
@@ -79,7 +89,7 @@ start_db() {
   if docker inspect "${DB_CONTAINER_NAME}" > /dev/null 2>&1; then
     echo -e "${GREEN}The container $DB_CONTAINER_NAME exists.${NC}"
 
-    if $(docker inspect -f '{{.State.Status}}' "${DB_CONTAIRE_NAME}" | grep -q "exited"); then
+    if $(docker inspect -f '{{.State.Status}}' "${DB_CONTAINER_NAME}" | grep -q "exited"); then
       echo -e "${GREEN}$DB_CONTAINER_NAME container is not running.${NC}"
       echo -e "${GREEN}Restarting $DB_CONTAINER_NAME container.${NC}"
       docker start lms-postgres
@@ -90,10 +100,10 @@ start_db() {
     echo -e "${GREEN}Starting ${DB_CONTAINER_NAME} container...${NC}"
     docker run --name "${DB_CONTAINER_NAME}" \
       --env-file .env \
-      -e POSTGRES_USER=$(grep DB_USER .env | cut -d '=' -f2) \
+      -e POSTGRES_USER="${DB_USER}" \
       -e POSTGRES_PASSWORD="${DB_PASSWORD}" \
-      -e POSTGRES_DB=$(grep DB_NAME .env | cut -d '=' -f2) \
-      -p "$(grep DB_PORT .env | cut -d '=' -f2):5432" \
+      -e POSTGRES_DB="${DB_NAME}" \
+      -p $DB_PORT:5432 \
       --network lms-network \
       -d postgres:17-alpine
   fi
