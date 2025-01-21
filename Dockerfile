@@ -1,6 +1,5 @@
-ARG GO_VERSION=1.24
 # Build stage
-FROM golang:{GO_VERSION}-rc-alpine AS build-stage
+FROM golang:1.24-rc-alpine AS build-stage
 
 WORKDIR /app/
 
