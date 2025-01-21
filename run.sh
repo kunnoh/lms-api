@@ -89,12 +89,12 @@ start_db() {
   if docker inspect "${DB_CONTAINER_NAME}" > /dev/null 2>&1; then
     echo -e "${GREEN}The container $DB_CONTAINER_NAME exists.${NC}"
 
-    if $(docker inspect -f '{{.State.Status}}' "${DB_CONTAINER_NAME}" | grep -q "exited"); then
+    if $(docker inspect -f '{{.State.Status}}' "${DB_CONTAINER_NAME}" | grep -q "running"); then
+      echo -e "${GREEN}$DB_CONTAINER_NAME container is already running.${NC}"
+    else
       echo -e "${GREEN}$DB_CONTAINER_NAME container is not running.${NC}"
       echo -e "${GREEN}Restarting $DB_CONTAINER_NAME container.${NC}"
       docker start lms-postgres
-    else
-      echo -e "${GREEN}$DB_CONTAINER_NAME container is already running.${NC}"
     fi
   else
     echo -e "${GREEN}Starting ${DB_CONTAINER_NAME} container...${NC}"
@@ -128,7 +128,7 @@ help_menu() {
   echo -e "${HED}dev          ${BROWN}Run the application locally${NC}"
   echo -e "${HED}build-app    ${BROWN}Build the Go binary for the app${NC}"
   echo -e "${HED}test-app     ${BROWN}Run tests${NC}"
-  echo -e "${HED}build-image  ${BROWN}Build the Docker image${NC}"
+  echo -e "${HED}build-image  ${BROWN}Build the docker image${NC}"
   echo -e "${HED}start-app    ${BROWN}Start the LMS API container${NC}"
   echo -e "${HED}stop-app     ${BROWN}Stop and remove the LMS API container${NC}"
   echo -e "${HED}start-db     ${BROWN}Start the PostgreSQL container${NC}"

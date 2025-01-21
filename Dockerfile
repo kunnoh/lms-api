@@ -1,5 +1,6 @@
+ARG GO_VERSION=1.24
 # Build stage
-FROM golang:1.24-rc-alpine AS build-stage
+FROM golang:{GO_VERSION}-rc-alpine AS build-stage
 
 WORKDIR /app/
 
@@ -22,7 +23,7 @@ RUN groupadd --system --gid 990 lmsapp && \
     useradd --system --uid 990 --gid lmsapp lmsapp
 
 # Final release stage
-FROM gcr.io/distroless/base-debian12 AS build-release-stage
+FROM gcr.io/distroless/base-debian12 AS release-stage
 
 WORKDIR /app/
 
